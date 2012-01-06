@@ -12,7 +12,6 @@
    */
 
 echoComment('j3d');
-echoFlat('<!--[if IE]><script type="text/javascript" src="bulk/minuscube/js/excanvas.js"></script><![endif]-->');
 echoFlat('<script type="text/javascript" src="bulk/minuscube/js/j3d/trigo.js"></script>');
 echoFlat('<script type="text/javascript" src="bulk/minuscube/js/j3d/matrix.js"></script>');
 echoFlat('<script type="text/javascript" src="bulk/minuscube/js/j3d/vector.js"></script>');
