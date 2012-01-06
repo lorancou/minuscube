@@ -1,7 +1,7 @@
 /*
    Ajax3d - a 3d engine using the WHATWG HTML <canvas> tag.
    
-   Copyright (C) 2007-2008 Eben Upton, Laurent Couvidou
+   Copyright (C) 2007-2012 Eben Upton, Laurent Couvidou
    
    This program is free software; you can redistribute it and/or
    modify it under the terms of version 2 of the GNU General Public 
