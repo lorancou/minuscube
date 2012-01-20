@@ -1,1 +1,8 @@
+.gitignore
+.syncignore
+backup.sh
+restore.sh
+clean.sh
+sync.sh
+TAGS
 minus.js
