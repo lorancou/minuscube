@@ -5,3 +5,7 @@
 
 - Use PHP minify (or equivalent) to build minus.js
 - WebGL instead of j3d
+- Cursor particles, color shows what can move
+- Cube moving animation
+- Ending
+- Scoring? Timing?
