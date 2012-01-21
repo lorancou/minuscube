@@ -1,0 +1,27 @@
+<html>
+
+  <head>
+    <title><!-- MINUS_TITLE --></title>
+    <link rel="shortcut icon" href="minus.ico" />
+    <link rel="stylesheet" type="text/css" href="minus.css"></link>
+    <!-- MINUS_INCLUDES -->
+  </head>
+
+  <body onload="main_init();">
+
+    <div id="title">
+      <!-- MINUS_TITLE -->
+      | <span id="fps">0</span> fps
+      | <span id="avg">0</span> avg
+      | <span id="tri">0</span> tri
+    </div>
+    <div><canvas id="main" width="400" height="300"></canvas></div>
+    <div id="command">
+      <a onclick="minus_input_scramble();">scramble</a>
+      | <a onclick="minus_input_solve();">solve</a>
+    </div>
+    <div id="output"><ul><li><!-- MINUS_TITLE --></li></ul></div>
+
+  </body>
+
+</html>
