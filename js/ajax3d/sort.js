@@ -17,15 +17,15 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-function j3d_sort(buckets, cells, bounds)
+function ajax3d_sort(buckets, cells, bounds)
 {
     var cell_type_face     = 0;
     var cell_type_particle = 1;
     
     var bucket = new Array(buckets);
     
-    var cell = j3d_util_makeobjectarray(cells);
-    var bound = j3d_util_makeobjectarray(bounds);
+    var cell = ajax3d_util_makeobjectarray(cells);
+    var bound = ajax3d_util_makeobjectarray(bounds);
     
     var pos;
 
@@ -134,7 +134,7 @@ function j3d_sort(buckets, cells, bounds)
         var vertices1 = model.vertices[1];
         var thresh = vertices0.length;
         
-        var length = model.faces.j3d_length;
+        var length = model.faces.ajax3d_length;
         
         if (length == null)
         length = model.faces.length;

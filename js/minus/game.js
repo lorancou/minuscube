@@ -31,8 +31,8 @@ function minus_game()
     
     this.init = function()
     {
-        this.light = new j3d_light( j3d_vector_normalize( [-0.33, 0.0, -0.66, 0.0] ) );
-        this.sort = new j3d_sort( 64, 200, 8 );
+        this.light = new ajax3d_light( ajax3d_vector_normalize( [-0.33, 0.0, -0.66, 0.0] ) );
+        this.sort = new ajax3d_sort( 64, 200, 8 );
         this.camera = new minus_camera();
         this.cube = new minus_cube();
         minus_input_init();

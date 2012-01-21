@@ -17,7 +17,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-function j3d_intersect_ray_aabb( ray_org, ray_dir, aabb_min, aabb_max )
+function ajax3d_intersect_ray_aabb( ray_org, ray_dir, aabb_min, aabb_max )
 {
     var tmin, tmax, tymin, tymax, tzmin, tzmax;
 

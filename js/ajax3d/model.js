@@ -17,15 +17,15 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-function j3d_model_make_normals(model)
+function ajax3d_model_make_normals(model)
 {
    model.normals = new Array(model.faces.length);
    
    for (var i = 0; i < model.faces.length; i++) {
-      var v1 = j3d_vector_subtract(model.vertices[0][model.faces[i].indices[2]], model.vertices[0][model.faces[i].indices[0]]);
-      var v2 = j3d_vector_subtract(model.vertices[0][model.faces[i].indices[1]], model.vertices[0][model.faces[i].indices[0]]);
+      var v1 = ajax3d_vector_subtract(model.vertices[0][model.faces[i].indices[2]], model.vertices[0][model.faces[i].indices[0]]);
+      var v2 = ajax3d_vector_subtract(model.vertices[0][model.faces[i].indices[1]], model.vertices[0][model.faces[i].indices[0]]);
       
-      model.normals[i] = j3d_vector_normalize(j3d_vector_cross(v2, v1));
+      model.normals[i] = ajax3d_vector_normalize(ajax3d_vector_cross(v2, v1));
 
 //        model.normals[i][0] = -model.normals[i][0];
 //        model.normals[i][1] = -model.normals[i][1];
@@ -36,7 +36,7 @@ function j3d_model_make_normals(model)
    }
 }
 
-function j3d_model_make_centers(model)
+function ajax3d_model_make_centers(model)
 {
    model.centers = new Array(model.faces.length);
 
@@ -44,15 +44,15 @@ function j3d_model_make_centers(model)
       var center = [0, 0, 0, 0];
 
       for (var j = 0; j < model.faces[i].indices.length; j++)
-         center = j3d_vector_add(center, model.vertices[0][model.faces[i].indices[j]]);
+         center = ajax3d_vector_add(center, model.vertices[0][model.faces[i].indices[j]]);
 
-      model.centers[i] = j3d_vector_multiply(center, 1.0 / model.faces[i].indices.length);
+      model.centers[i] = ajax3d_vector_multiply(center, 1.0 / model.faces[i].indices.length);
       
       model.faces[i].center = i;
    }
 }
 
-function j3d_model_multiply(model, matrix, mprime)
+function ajax3d_model_multiply(model, matrix, mprime)
 {
    if (mprime == null)
       mprime = {vertices: []};
@@ -64,15 +64,15 @@ function j3d_model_multiply(model, matrix, mprime)
                  
    for (var i = 0; i < model.vertices.length; i++) {
       if (mprime.vertices[i] == null || mprime.vertices[i].length < model.vertices[i].length)
-         mprime.vertices[i] = j3d_util_make2darray(model.vertices[i].length, 4);
+         mprime.vertices[i] = ajax3d_util_make2darray(model.vertices[i].length, 4);
          
-      j3d_matrix_multiply(model.vertices[i], matrix, mprime.vertices[i]);
+      ajax3d_matrix_multiply(model.vertices[i], matrix, mprime.vertices[i]);
    }
                  
    return mprime;
 }                                    
 
-function j3d_model_dehomogenize(model, mprime)
+function ajax3d_model_dehomogenize(model, mprime)
 {
    if (mprime == null)
       mprime = {vertices: []};
@@ -84,9 +84,9 @@ function j3d_model_dehomogenize(model, mprime)
 
    for (var i = 0; i < model.vertices.length; i++) {
       if (mprime.vertices[i] == null || mprime.vertices[i].length < model.vertices[i].length)
-         mprime.vertices[i] = j3d_util_make2darray(model.vertices[i].length, 4);
+         mprime.vertices[i] = ajax3d_util_make2darray(model.vertices[i].length, 4);
       
-      j3d_matrix_dehomogenize(model.vertices[i], mprime.vertices[i]);
+      ajax3d_matrix_dehomogenize(model.vertices[i], mprime.vertices[i]);
    }
                  
    return mprime;

@@ -17,7 +17,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-function j3d_light(dir)
+function ajax3d_light(dir)
 {
 	this.dir = dir;
 	this.eye = [0, 0, 0, 1];
@@ -30,10 +30,10 @@ function j3d_light(dir)
     
 	this.transform = function(matrix) 
 	{
-		var inverse = j3d_matrix_invert_simple(matrix);
+		var inverse = ajax3d_matrix_invert_simple(matrix);
 		
-		dir_internal = j3d_matrix_multiply([this.dir], inverse)[0];
-		eye_internal = j3d_matrix_multiply([this.eye], inverse)[0];
+		dir_internal = ajax3d_matrix_multiply([this.dir], inverse)[0];
+		eye_internal = ajax3d_matrix_multiply([this.eye], inverse)[0];
 	};
 	
 	this.light_face = function(normal, center, material)
@@ -50,7 +50,7 @@ function j3d_light(dir)
 			var b = material.ambient[2];
 			
 			// Diffuse component
-			var diff = j3d_vector_dot(normal, dir_internal);
+			var diff = ajax3d_vector_dot(normal, dir_internal);
 
 			if (diff > 0)
 			{
@@ -62,13 +62,13 @@ function j3d_light(dir)
 			// Specular component
 			if (normal != null && center != null)
 			{
-				var v1 = j3d_vector_subtract(center, eye_internal, work1);
-				var dot = j3d_vector_dot(v1, normal);
-				var v2 = j3d_vector_multiply(normal, -2 * dot, work2);
-				var v3 = j3d_vector_add(v1, v2, work1);
-				var v4 = j3d_vector_normalize(v3, work1);
+				var v1 = ajax3d_vector_subtract(center, eye_internal, work1);
+				var dot = ajax3d_vector_dot(v1, normal);
+				var v2 = ajax3d_vector_multiply(normal, -2 * dot, work2);
+				var v3 = ajax3d_vector_add(v1, v2, work1);
+				var v4 = ajax3d_vector_normalize(v3, work1);
 				
-				var spec = j3d_vector_dot(v4, dir_internal);
+				var spec = ajax3d_vector_dot(v4, dir_internal);
 				
 				if (spec > 0)
 				{
@@ -81,7 +81,7 @@ function j3d_light(dir)
 			}
 			
 			// Generate HTML color
-			return j3d_util_rgbcolor(r * 256, g * 256, b * 256);
+			return ajax3d_util_rgbcolor(r * 256, g * 256, b * 256);
 		}
 	};
 
@@ -89,7 +89,7 @@ function j3d_light(dir)
 	{
 		this.transform(matrix);
 
-		var length = model.faces.j3d_length;
+		var length = model.faces.ajax3d_length;
 		
 		if (length == null)
 			length = model.faces.length;

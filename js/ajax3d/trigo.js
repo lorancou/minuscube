@@ -22,7 +22,7 @@ var PI = 3.14159265358979323846;
 var PIx3_2 = 4.71238898038468985769;
 var PIx2 = 6.28318530717958647692;
 
-var j3d_sin_table = [
+var ajax3d_sin_table = [
     0.000000, 0.017452, 0.034899, 0.052336, 0.069756, 0.087156,
     0.104528, 0.121869, 0.139173, 0.156434, 0.173648, 0.190809,
     0.207912, 0.224951, 0.241922, 0.258819, 0.275637, 0.292372,
@@ -40,12 +40,12 @@ var j3d_sin_table = [
     0.994522, 0.996195, 0.997564, 0.998630, 0.999391, 0.999848
 ];
 
-function j3d_cos(a)
+function ajax3d_cos(a)
 {
-    return j3d_sin(a + PI_2);
+    return ajax3d_sin(a + PI_2);
 }
 
-function j3d_sin(a)
+function ajax3d_sin(a)
 {
     var ma = a;
     while ( ma > PIx2 )
@@ -81,5 +81,5 @@ function j3d_sin(a)
     log( "index = " + index );
     log( "sign = " + sign );
 
-    return sign * j3d_sin_table[index];
+    return sign * ajax3d_sin_table[index];
 }

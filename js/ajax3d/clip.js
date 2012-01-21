@@ -17,7 +17,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-function j3d_clip(planes)
+function ajax3d_clip(planes)
 {
    this.planes = planes;
 
@@ -25,9 +25,9 @@ function j3d_clip(planes)
 
    this.transform = function(matrix)
    {
-      var transpose = j3d_matrix_transpose(matrix);
+      var transpose = ajax3d_matrix_transpose(matrix);
       
-      planes_internal = j3d_matrix_multiply(planes, transpose);
+      planes_internal = ajax3d_matrix_multiply(planes, transpose);
    };                       
                        
    this.clip_indices = function(indices, vertices, matrix, mask)
@@ -47,17 +47,17 @@ function j3d_clip(planes)
          
             var index = indices[indices.length - 1];
             var vertex = index < thresh ? vertices0[index] : vertices1[index - thresh];
-            var dot = j3d_vector_dot(vertex, plane);
+            var dot = ajax3d_vector_dot(vertex, plane);
          
             for (var j = 0; j < indices.length; j++) {
                var new_index = indices[j];
                var new_vertex = new_index < thresh ? vertices0[new_index] : vertices1[new_index - thresh];
-               var new_dot = j3d_vector_dot(new_vertex, plane);
+               var new_dot = ajax3d_vector_dot(new_vertex, plane);
       
                if (new_dot > 0 && dot <= 0 || new_dot <= 0 && dot > 0) {
-                  new_indices.push(thresh + vertices1.j3d_length);
+                  new_indices.push(thresh + vertices1.ajax3d_length);
                   
-                  j3d_vector_blend(vertex, new_vertex, dot / (dot - new_dot), vertices1[vertices1.j3d_length++]);
+                  ajax3d_vector_blend(vertex, new_vertex, dot / (dot - new_dot), vertices1[vertices1.ajax3d_length++]);
                }
          
                if (new_dot <= 0)
@@ -84,17 +84,17 @@ function j3d_clip(planes)
       mprime.vertices[0] = model.vertices[0];
       
       if (mprime.vertices[1] == null || mprime.vertices[1].length < model.faces.length * planes.length)
-         mprime.vertices[1] = j3d_util_make2darray(model.faces.length * planes.length, 4);
+         mprime.vertices[1] = ajax3d_util_make2darray(model.faces.length * planes.length, 4);
          
-      mprime.vertices[1].j3d_length = 0;
+      mprime.vertices[1].ajax3d_length = 0;
 
       mprime.normals = model.normals;
       mprime.centers = model.centers;
       
       if (mprime.faces == null || mprime.faces.length < model.faces.length)
-         mprime.faces = j3d_util_makeobjectarray(model.faces.length);
+         mprime.faces = ajax3d_util_makeobjectarray(model.faces.length);
          
-//      mprime.faces.j3d_length = 0;
+//      mprime.faces.ajax3d_length = 0;
       
       mprime.bias = model.bias;
       
@@ -132,7 +132,7 @@ function j3d_clip(planes)
          }
       }
       
-      mprime.faces.j3d_length = length;
+      mprime.faces.ajax3d_length = length;
       
       return mprime;
    }

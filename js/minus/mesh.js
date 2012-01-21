@@ -101,5 +101,5 @@ var minus_mesh = {
 	]
 };
 
-j3d_model_make_normals( minus_mesh );
-j3d_model_make_centers( minus_mesh );
+ajax3d_model_make_normals( minus_mesh );
+ajax3d_model_make_centers( minus_mesh );

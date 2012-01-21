@@ -17,7 +17,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-function j3d_util_make2darray(d1, d2)
+function ajax3d_util_make2darray(d1, d2)
 {
    var res = new Array(d1);
    
@@ -27,7 +27,7 @@ function j3d_util_make2darray(d1, d2)
    return res;
 }
 
-function j3d_util_makeobjectarray(d)
+function ajax3d_util_makeobjectarray(d)
 {
    var res = new Array(d);
    
@@ -37,7 +37,7 @@ function j3d_util_makeobjectarray(d)
    return res;
 }
 
-function j3d_util_rgbcolor(r, g, b)
+function ajax3d_util_rgbcolor(r, g, b)
 {
    var r = Math.floor(r);
    var g = Math.floor(g);
@@ -53,7 +53,7 @@ function j3d_util_rgbcolor(r, g, b)
    return "rgb(" + r + ", " + g + ", " + b + ")";
 }
 
-function j3d_util_rgbacolor(r, g, b, a)
+function ajax3d_util_rgbacolor(r, g, b, a)
 {
    var r = Math.floor(r);
    var g = Math.floor(g);

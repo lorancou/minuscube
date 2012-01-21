@@ -17,7 +17,7 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-function j3d_matrix_transpose(a, d)
+function ajax3d_matrix_transpose(a, d)
 {
    if (d == null)
       return [[a[0][0], a[1][0], a[2][0], a[3][0]],
@@ -38,7 +38,7 @@ function j3d_matrix_transpose(a, d)
    }
 }
 
-function j3d_matrix_invert_simple(a, d)
+function ajax3d_matrix_invert_simple(a, d)
 {
    var m1 = [[a[0][0], a[1][0], a[2][0], 0.0],
              [a[0][1], a[1][1], a[2][1], 0.0],
@@ -50,15 +50,15 @@ function j3d_matrix_invert_simple(a, d)
              [     0.0,      0.0,      1.0, 0.0],
              [-a[3][0], -a[3][1], -a[3][2], 1.0]];
 
-   return j3d_matrix_multiply(m2, m1, d);
+   return ajax3d_matrix_multiply(m2, m1, d);
 }
 
-function j3d_matrix_rotate_x(a, d)
+function ajax3d_matrix_rotate_x(a, d)
 {
    var s = Math.sin(a);
    var c = Math.cos(a);
-//    var s = j3d_sin(a);
-//    var c = j3d_cos(a);
+//    var s = ajax3d_sin(a);
+//    var c = ajax3d_cos(a);
    
    if (d == null)
       return [[ 1,  0,  0,  0],
@@ -95,7 +95,7 @@ function j3d_matrix_rotate_x(a, d)
    }
 }
 
-function j3d_matrix_rotate_y(a, d)
+function ajax3d_matrix_rotate_y(a, d)
 {
    var s = Math.sin(a);
    var c = Math.cos(a);
@@ -135,7 +135,7 @@ function j3d_matrix_rotate_y(a, d)
    }
 }
               
-function j3d_matrix_rotate_z(a, d)
+function ajax3d_matrix_rotate_z(a, d)
 {
    var s = Math.sin(a);
    var c = Math.cos(a);
@@ -175,10 +175,10 @@ function j3d_matrix_rotate_z(a, d)
    }
 }
 
-function j3d_matrix_rotate_axis(a, u, d)
+function ajax3d_matrix_rotate_axis(a, u, d)
 {
     var s = Math.sin(angle);
-    var c = j3d_cos(angle);
+    var c = ajax3d_cos(angle);
 
     var ux = u[0];
     var uy = u[1];
@@ -219,7 +219,7 @@ function j3d_matrix_rotate_axis(a, u, d)
     }
 }
               
-function j3d_matrix_translate(x, y, z, d)
+function ajax3d_matrix_translate(x, y, z, d)
 {
    if (d == null)
       return [[ 1,  0,  0,  0],
@@ -256,7 +256,7 @@ function j3d_matrix_translate(x, y, z, d)
    }
 }
 
-function j3d_matrix_scale(x, y, z, d)
+function ajax3d_matrix_scale(x, y, z, d)
 {
    if (d == null)
       return [[ x,  0,  0,  0],
@@ -293,7 +293,7 @@ function j3d_matrix_scale(x, y, z, d)
    }
 }
 
-function j3d_matrix_project(w, h, n, f, d)
+function ajax3d_matrix_project(w, h, n, f, d)
 {
    var l = f - n;
    
@@ -332,7 +332,7 @@ function j3d_matrix_project(w, h, n, f, d)
    }
 }
 
-function j3d_matrix_null(d)
+function ajax3d_matrix_null(d)
 {
    if (d == null)
       return [[0, 0, 0, 0], 
@@ -369,7 +369,7 @@ function j3d_matrix_null(d)
    }
 }
 
-function j3d_matrix_identity(d)
+function ajax3d_matrix_identity(d)
 {
    if (d == null)
       return [[1, 0, 0, 0], 
@@ -406,15 +406,15 @@ function j3d_matrix_identity(d)
    }
 }
 
-function j3d_matrix_multiply(a, b, d)
+function ajax3d_matrix_multiply(a, b, d)
 {
-   var length = a.j3d_length;
+   var length = a.ajax3d_length;
    
    if (length == null)
       length = a.length;
    
    if (d == null)
-      d = j3d_util_make2darray(length, 4);
+      d = ajax3d_util_make2darray(length, 4);
 
    var b0 = b[0];
    var b1 = b[1];
@@ -453,20 +453,20 @@ function j3d_matrix_multiply(a, b, d)
       di[3] = ai0 * b03 + ai1 * b13 + ai2 * b23 + ai3 * b33;
    }
 
-   d.j3d_length = length;
+   d.ajax3d_length = length;
       
    return d;
 }
 
-function j3d_matrix_dehomogenize(a, d)
+function ajax3d_matrix_dehomogenize(a, d)
 {
-   var length = a.j3d_length;
+   var length = a.ajax3d_length;
    
    if (length == null)
       length = a.length;
    
    if (d == null)
-      d = j3d_util_make2darray(length, 4);
+      d = ajax3d_util_make2darray(length, 4);
    
    for (var i = 0; i < length; i++) {
       var ai = a[i];
@@ -480,7 +480,7 @@ function j3d_matrix_dehomogenize(a, d)
       di[3] = 1.0;
    }
    
-   d.j3d_length = length;
+   d.ajax3d_length = length;
    
    return d;
 }

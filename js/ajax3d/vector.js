@@ -17,17 +17,17 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
-function j3d_vector_copy(a)
+function ajax3d_vector_copy(a)
 {
    return [a[0], a[1], a[2], a[3]];
 }
 
-function j3d_vector_dot(a, b)
+function ajax3d_vector_dot(a, b)
 {
    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
 }
 
-function j3d_vector_magnitude(a)
+function ajax3d_vector_magnitude(a)
 {
    var a0 = a[0];
    var a1 = a[1];
@@ -37,7 +37,7 @@ function j3d_vector_magnitude(a)
    return Math.sqrt(a0 * a0 + a1 * a1 + a2 * a2 + a3 * a3);
 }
 
-function j3d_vector_add(a, b, d)
+function ajax3d_vector_add(a, b, d)
 {  
    if (d == null)
       return [a[0] + b[0], 
@@ -54,7 +54,7 @@ function j3d_vector_add(a, b, d)
    }
 }
 
-function j3d_vector_subtract(a, b, d)
+function ajax3d_vector_subtract(a, b, d)
 {  
    if (d == null)
       return [a[0] - b[0], 
@@ -71,7 +71,7 @@ function j3d_vector_subtract(a, b, d)
    }
 }
 
-function j3d_vector_multiply(a, b, d)
+function ajax3d_vector_multiply(a, b, d)
 {  
    if (d == null)
       return [a[0] * b, 
@@ -88,7 +88,7 @@ function j3d_vector_multiply(a, b, d)
    }
 }
 
-function j3d_vector_blend(a, b, f, d)
+function ajax3d_vector_blend(a, b, f, d)
 {  
    var e = 1 - f;
    
@@ -107,7 +107,7 @@ function j3d_vector_blend(a, b, f, d)
    }
 }
 
-function j3d_vector_cross(a, b, d)
+function ajax3d_vector_cross(a, b, d)
 {
    if (d == null)
       return [a[1] * b [2] - a[2] * b[1], 
@@ -124,7 +124,7 @@ function j3d_vector_cross(a, b, d)
    }
 }
 
-function j3d_vector_normalize(a, d)
+function ajax3d_vector_normalize(a, d)
 {
    var a0 = a[0];
    var a1 = a[1];

@@ -36,7 +36,7 @@ function minus_cube()
         for ( var e = 0; e < __element.length; e++ )
         {
             if ( e != 0 ) //|| parseInt( main_time / 200 ) % 2 == 0 )
-                __element[e].draw( j3d_matrix_multiply( __rotxy, __rotdxy ), e, __slot_pos[ __element[e].slot ] );
+                __element[e].draw( ajax3d_matrix_multiply( __rotxy, __rotdxy ), e, __slot_pos[ __element[e].slot ] );
         }
     }
 
@@ -45,9 +45,9 @@ function minus_cube()
         this.rotdx = 0.0;
         this.rotdy = 0.0;
 
-        var new_rotxy = j3d_matrix_multiply( __rotxy, __rotdxy );
+        var new_rotxy = ajax3d_matrix_multiply( __rotxy, __rotdxy );
         __rotxy = new_rotxy;
-        __rotdxy = j3d_matrix_identity();
+        __rotdxy = ajax3d_matrix_identity();
     }
 
     this.interact = function( screen_x, screen_y )
@@ -55,18 +55,18 @@ function minus_cube()
         var ray_screen_org = [ screen_x, screen_y, 0.0, 1.0 ];
         var ray_screen_dir = [ 0.0, 0.0, 1.0, 1.0 ];
 
-        var ray_world_org = j3d_matrix_multiply( [ray_screen_org], minus.camera.inv_projection() )[0];
-        var ray_world_dir = j3d_matrix_multiply( [ray_screen_dir], minus.camera.inv_projection() )[0];
+        var ray_world_org = ajax3d_matrix_multiply( [ray_screen_org], g_minus.camera.inv_projection() )[0];
+        var ray_world_dir = ajax3d_matrix_multiply( [ray_screen_dir], g_minus.camera.inv_projection() )[0];
 
-        var ray_proj_org = j3d_matrix_dehomogenize( j3d_matrix_multiply( [ray_world_org], minus.debugcam.projection() ) )[0];
-        var ray_proj_dir = j3d_matrix_dehomogenize( j3d_matrix_multiply( [ray_world_dir], minus.debugcam.projection() ) )[0];
+        var ray_proj_org = ajax3d_matrix_dehomogenize( ajax3d_matrix_multiply( [ray_world_org], g_minus.debugcam.projection() ) )[0];
+        var ray_proj_dir = ajax3d_matrix_dehomogenize( ajax3d_matrix_multiply( [ray_world_dir], g_minus.debugcam.projection() ) )[0];
 
-        var ray_rot_org = j3d_matrix_dehomogenize( j3d_matrix_multiply( [ray_world_org], __rotxy ) )[0];
-        var ray_rot_dir = j3d_matrix_dehomogenize( j3d_matrix_multiply( [ray_world_dir], __rotxy ) )[0];
+        var ray_rot_org = ajax3d_matrix_dehomogenize( ajax3d_matrix_multiply( [ray_world_org], __rotxy ) )[0];
+        var ray_rot_dir = ajax3d_matrix_dehomogenize( ajax3d_matrix_multiply( [ray_world_dir], __rotxy ) )[0];
 
         for ( var e = 1; e < __element.length; e++ )
         {
-            if ( j3d_intersect_ray_aabb(
+            if ( ajax3d_intersect_ray_aabb(
                 ray_world_org, ray_world_dir,
                 [ 0.0, 0.0, 0.0 ],
                 [ 2*__element[e].position[0], 2*__element[e].position[1], 2*__element[e].position[2] ] ) )
@@ -108,7 +108,7 @@ function minus_cube()
                 __element[0],
                 __element[__neighbor[__element[0].slot][rand]]
             );
-            minus.update_needed = true;
+            g_minus.update_needed = true;
         }
     }
 
@@ -130,7 +130,7 @@ function minus_cube()
         __element[5].slot = 5;
         __element[6].slot = 6;
         __element[7].slot = 7;
-        minus.update_needed = true;
+        g_minus.update_needed = true;
     }
 
     // .. private
@@ -188,15 +188,15 @@ function minus_cube()
         __neighbor[6] = [ 2, 4, 7 ];
         __neighbor[7] = [ 3, 5, 6 ];
 
-        __rotxy = j3d_matrix_identity();
-        __rotdxy = j3d_matrix_identity();
+        __rotxy = ajax3d_matrix_identity();
+        __rotdxy = ajax3d_matrix_identity();
     }
 
     function __update_rotation( time_step )
     {
-        __rotdxy = j3d_matrix_multiply(
-            j3d_matrix_rotate_x( __this.rotdx ),
-            j3d_matrix_rotate_y( __this.rotdy )
+        __rotdxy = ajax3d_matrix_multiply(
+            ajax3d_matrix_rotate_x( __this.rotdx ),
+            ajax3d_matrix_rotate_y( __this.rotdy )
         );
     }
 
