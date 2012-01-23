@@ -9,8 +9,9 @@
  * This program is free software - see README for details.
  */
 
-// debug features switch
+// init params
 var g_dbg = false;
+var g_root = "";
  
 // 2D + WebGL canvas and context
 // NB: seems that having both context with one canvas isn't supported
@@ -70,7 +71,7 @@ function main_use_webgl()
 }
 
 //------------------------------------------------------------------------------
-function main_init(dbg)
+function main_init(dbg, root)
 {
     log( "initializing..." );
 	
@@ -79,6 +80,13 @@ function main_init(dbg)
 	{
 		log("debug features on");
 		g_dbg = true;
+	}
+
+	// set root
+	if (root)
+	{
+		log("using root: " + root);
+		g_root = root;
 	}
 
     // try to get 2D context

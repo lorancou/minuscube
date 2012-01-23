@@ -81,8 +81,8 @@ function getExtension(filename)
     var shaderProgram;
 
     function initShaders(gl) {
-        var fragmentShader = getShader(gl, "shader/fragment.fs"); // shader-fs
-        var vertexShader = getShader(gl, "shader/vertex.vs"); // shader-vs
+        var fragmentShader = getShader(gl, g_root + "shader/fragment.fs"); // shader-fs
+        var vertexShader = getShader(gl, g_root + "shader/vertex.vs"); // shader-vs
 
         shaderProgram = gl.createProgram();
         gl.attachShader(shaderProgram, vertexShader);

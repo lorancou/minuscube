@@ -11,7 +11,10 @@
    * This program is free software - see README for details.
    */
 
-echoFlat('<div><canvas id="main" width="120" height="120"></canvas></div>');
+echoOpen('<div id="canvases" style="position:relative;height:120px;">');
+echoFlat('<canvas id="2dcanvas" width="120" height="120" style="position:absolute;right:0px;top:0px;"></canvas>');
+echoFlat('<canvas id="glcanvas" width="120" height="120" style="position:absolute;right:0px;top:0px;"></canvas>');
+echoClose('</div>');
 
 $commandDiv = new UniqueDivision( "test", "command" );
 $commandDiv->begin();

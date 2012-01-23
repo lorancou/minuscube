@@ -12,6 +12,6 @@
    */
 
 
-echoOpen('<body onload="main_init();">');
+echoOpen('<body onload="main_init(false,\'addon/\');">');
 
 ?>

@@ -150,3 +150,25 @@ h2 {
 ::-webkit-scrollbar-button: { 
     display: none; 
 }
+
+
+
+div#canvases{
+	position:relative;
+	width:200px;
+	height:200px;
+}
+
+canvas#2dcanvas {
+	z-index: 1;
+	position:absolute;
+	left:0px;
+	top:0px;
+}
+
+canvas#glcanvas {
+	z-index: 2;
+	position:absolute;
+	left:0px;
+	top:0px;
+}

@@ -20,14 +20,19 @@
     <!-- Loading pop-up logic -->
     <script type="text/javascript" src="js/popup.js"></script>
     
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="http://lorancou.free.fr/bulk/jsdep/gl-matrix-min.js"></script>
     <script type="text/javascript" src="../../minus.js"></script>
   </head>
-  <body onload="main_init();">
+  <body onload="main_init(false);">
         <div id="wrapper">
             <a id="minimize" href="#"></a>
             <div id="content">
             
-                <div><canvas id="main" width="200" height="200"></canvas></div>
+              <div id="canvases">
+                <canvas id="2dcanvas" width="200" height="200"></canvas>
+                <canvas id="glcanvas" width="200" height="200"></canvas>
+              </div>
                 
             </div>
         </div>
