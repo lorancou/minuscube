@@ -134,7 +134,7 @@ function minus_game()
         this.cube.frame( time_step );
         
         // draw - Ajax3d
-		if (!g_usegl)
+		if (g_renderer == "Ajax3d")
 		{
 			g_2dctx.fillStyle = BACKGROUND_COLOR;
 			this.sort.clear(g_2dctx);
@@ -143,7 +143,7 @@ function minus_game()
 			this.sort.draw(g_2dctx);
 		}
         // draw - WebGL
-		else
+		else if (g_renderer == "WebGL")
 		{
             drawScene(g_glctx);
 		}
