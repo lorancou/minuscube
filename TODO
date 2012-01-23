@@ -10,7 +10,6 @@
 - Ending
 - Scoring? Timing?
 - Browser fullscreen toggle
-- IE9 support
 - WebGL only for Pokki distrib
 - Advertise WebGL if support missing
 - Handle lost context: http://www.khronos.org/webgl/wiki/HandlingContextLost

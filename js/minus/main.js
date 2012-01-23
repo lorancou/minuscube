@@ -18,7 +18,7 @@ var g_2dcanvas = null;
 var g_2dctx = null;
 var g_glcanvas = null;
 var g_glctx = null;
-var g_usegl = false;
+var g_renderer = null;
 var g_canvas = false;
 
 // for stats
@@ -34,7 +34,13 @@ var g_minus = null;
 //------------------------------------------------------------------------------
 function main_use_ajax3d()
 {
-	g_usegl = false;
+    if (g_renderer == "Ajax3d")
+    {
+        log("already rendering with Ajax3d");
+        return;
+    }
+	g_renderer = "Ajax3d";
+
 	if (g_minus) g_minus.update_needed = true;
     if (g_2dcanvas) g_2dcanvas.style.visibility='visible';
     if (g_glcanvas) g_glcanvas.style.visibility='hidden';
@@ -49,7 +55,14 @@ function main_use_webgl()
 		log("ERROR: can't use WebGL");
 		return;
 	}
-	g_usegl = true;
+
+    if (g_renderer == "WebGL")
+    {
+        log("already rendering with WebGL");
+        return;
+    }
+	g_renderer = "WebGL";
+    
     if (g_minus) g_minus.update_needed = true;
     if (g_2dcanvas) g_2dcanvas.style.visibility='hidden';
     if (g_glcanvas) g_glcanvas.style.visibility='visible';
