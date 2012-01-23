@@ -5,8 +5,8 @@ restore.sh
 upload.*.sh
 TAGS
 minus.js
+bulk
 
-distrib/pokki/chatqna.txt
 distrib/pokki/minus.js
 distrib/pokki/shader
 

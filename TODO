@@ -15,3 +15,4 @@
 - Handle lost context: http://www.khronos.org/webgl/wiki/HandlingContextLost
 - Error handling function, warning, error, assert (alert + log) etc.
 - Chrome warning fix: event.layerX and event.layerY are broken and deprecated in WebKit
+- Specular + Phong

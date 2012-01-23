@@ -20,7 +20,6 @@ var g_2dctx = null;
 var g_glcanvas = null;
 var g_glctx = null;
 var g_renderer = null;
-var g_canvas = false;
 
 // for stats
 var main_time_step = 0.0;
@@ -148,15 +147,27 @@ function main_init(dbg, root)
     g_minus.init();
     g_minus.frame( 0.0 );
 
-	// TODO: check this http://www.khronos.org/webgl/wiki/FAQ#What_is_the_recommended_way_to_implement_a_rendering_loop.3F
-    setTimeout( 'main_frame()', 0.0 );
-    
     log( "done." );
+    log( "starting game loop" );
+    
+    main_frame();
 }
 
 //------------------------------------------------------------------------------
 function main_frame()
 {
+    if (g_dbg)
+    {
+        // in debug, run as fast as possible
+        setTimeout('main_frame()', 0.0);
+    }
+    else
+    {
+        // in release, use the WebGL-recommended rendering loop
+        // http://www.khronos.org/webgl/wiki/FAQ#What_is_the_recommended_way_to_implement_a_rendering_loop.3F
+        requestAnimFrame(main_frame);
+    }
+
     main_time = new Date().getTime();
     main_time_step = main_time - main_last_time;
     
@@ -167,8 +178,6 @@ function main_frame()
     
     main_last_time = main_time;
     main_tick++;
-    
-    setTimeout( 'main_frame()', 0.0 );
 }
 
 //------------------------------------------------------------------------------

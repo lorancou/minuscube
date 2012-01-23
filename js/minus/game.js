@@ -22,11 +22,11 @@ function minus_game()
     var BG_COLOR_B = 0.5; // 0.996
     var BG_COLOR_A = 1.0; // 0.996
     var BG_COLOR_CSS = "rgba("
-                     + Math.round(BG_COLOR_R*255)
+                     + Math.round(BG_COLOR_R*256)
                      + ","
-                     + Math.round(BG_COLOR_G*255)
+                     + Math.round(BG_COLOR_G*256)
                      + ","
-                     + Math.round(BG_COLOR_B*255)
+                     + Math.round(BG_COLOR_B*256)
                      + ","
                      + BG_COLOR_A
                      + ")";

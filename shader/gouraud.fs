@@ -1,8 +1,5 @@
-/*precision mediump float;
-
-void main(void) {
-    gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-}*/
+// gouraud shading
+// pass-through: apply interpolated vertex color
 
 precision mediump float;
 

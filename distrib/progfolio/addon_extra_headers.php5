@@ -13,6 +13,7 @@
 
 //echoFlat('<link rel="stylesheet" type="text/css" href="addon/minus.css"></link>');
 echoFlat('<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>');
+echoFlat('<script type="text/javascript" src="https://cvs.khronos.org/svn/repos/registry/trunk/public/webgl/sdk/demos/common/webgl-utils.js"></script>');
 echoFlat('<script type="text/javascript" src="http://lorancou.free.fr/bulk/jsdep/gl-matrix-min.js"></script>');
 echoFlat('<script type="text/javascript" src="addon/minus.js"></script>');
 
