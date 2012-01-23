@@ -8,6 +8,7 @@ js/ajax3d/model.js
 js/ajax3d/util.js
 js/ajax3d/sort.js
 js/ajax3d/clip.js
+js/webgl/glcore.js
 js/minus/camera.js
 js/minus/input.js
 js/minus/mesh.js

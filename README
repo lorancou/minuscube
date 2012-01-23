@@ -3,9 +3,14 @@
   3D experiments with HTML5
 ---------------------------------------------------------------------------------
 
-Copyright (c) 2006-2011 Laurent Couvidou
-http://lorancou.free.fr/index.php5?page=project&id-unix=progfolio
+Copyright (c) 2006-2012 Laurent Couvidou
+http://lorancou.free.fr/index.php5?page=project&id-unix=minus
 Contact: lorancou@free.fr
+
+For the 2D canvas context rendering:
+Ajax3d - a 3d engine using the WHATWG HTML <canvas> tag.
+Copyright (c) 2007-2012 Eben Upton
+http://ajax3d.sourceforge.net/
 
 ---------------------------------------------------------------------------------
   LICENSE

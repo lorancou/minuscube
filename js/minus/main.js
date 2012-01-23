@@ -9,50 +9,137 @@
  * This program is free software - see README for details.
  */
 
-// .. public
+// debug features switch
+var g_dbg = false;
+ 
+// 2D + WebGL canvas and context
+// NB: seems that having both context with one canvas isn't supported
+var g_2dcanvas = null;
+var g_2dctx = null;
+var g_glcanvas = null;
+var g_glctx = null;
+var g_usegl = false;
+var g_canvas = false;
 
-var MAX_FPS = 30;
-var MAX_INTERVAL = 1000 / MAX_FPS;
-
-var main_canvas = null;
-var main_ctx = null;
-
+// for stats
 var main_time_step = 0.0;
 var main_time = new Date().getTime();
 var main_last_time = new Date().getTime();
 var main_tick = 0;
-
 var main_fps = [];
 
-var minus = null;
+// the game object
+var g_minus = null;
 
-function main_init()
+//------------------------------------------------------------------------------
+function main_use_ajax3d()
+{
+	g_usegl = false;
+	if (g_minus) g_minus.update_needed = true;
+    if (g_2dcanvas) g_2dcanvas.style.visibility='visible';
+    if (g_glcanvas) g_glcanvas.style.visibility='hidden';
+    log("rendering with Ajax3d (2D canvas context)");
+}
+
+//------------------------------------------------------------------------------
+function main_use_webgl()
+{
+	if (!g_glctx)
+	{
+		log("ERROR: can't use WebGL");
+		return;
+	}
+	g_usegl = true;
+    if (g_minus) g_minus.update_needed = true;
+    if (g_2dcanvas) g_2dcanvas.style.visibility='hidden';
+    if (g_glcanvas) g_glcanvas.style.visibility='visible';
+    log("rendering with WebGL");
+}
+
+//------------------------------------------------------------------------------
+function main_init(dbg)
 {
     log( "initializing..." );
-    
-    main_canvas = document.getElementById('main');
-//     if ( !main_canvas )
-//     {
-//         return;
-//     }
+	
+	// activate debug stuff
+	if (dbg)
+	{
+		log("debug features on");
+		g_dbg = true;
+	}
 
-    main_ctx = main_canvas.getContext('2d');
-    
-    minus = new minus_game();
-    minus.init();
-    minus.frame( 0.0 );
+    // try to get 2D context
+    g_2dcanvas = document.getElementById("2dcanvas");
+    if (!g_2dcanvas)
+    {
+        log("ERROR: missing 2D canvas element");
+        return;
+    }
+	g_2dctx = g_2dcanvas.getContext('2d');
+	if (!g_2dctx)
+	{
+		log("ERROR: can't initialize 2D context");
+		return;
+	}
 
+    // try to get WebGL context
+    // http://www.khronos.org/webgl/wiki/FAQ#What_is_the_recommended_way_to_initialize_WebGL.3F
+    g_glcanvas = document.getElementById("glcanvas");
+    if (!g_glcanvas)
+    {
+        log("WARNING: missing WebGL canvas element");
+    }
+    else if (!window.WebGLRenderingContext)
+    {
+        log("WARNING: WebGL not supported");
+        // the browser doesn't even know what WebGL is
+        //window.location = "http://get.webgl.org";
+    }
+	else if (g_glctx = g_glcanvas.getContext("webgl"))
+	{
+        log("WebGL supported");
+		webgl_init(g_glctx);
+	}
+    else if (g_glctx = g_glcanvas.getContext("experimental-webgl"))
+    {
+        log("WARNING: experimental WebGL support");
+		webgl_init(g_glctx);
+	}
+	else
+	{
+		// browser supports WebGL but initialization failed.
+		//window.location = "http://get.webgl.org/troubleshooting";
+		log("WARNING: can't initialize WebGL context");
+    }
+	
+	// choose renderer
+    if (g_glctx)
+    {
+        main_use_webgl();
+    }
+    else
+    {
+        main_use_ajax3d();
+    }
+    
+	// init game
+    g_minus = new minus_game();
+    g_minus.init();
+    g_minus.frame( 0.0 );
+
+	// TODO: check this http://www.khronos.org/webgl/wiki/FAQ#What_is_the_recommended_way_to_implement_a_rendering_loop.3F
     setTimeout( 'main_frame()', 0.0 );
     
     log( "done." );
 }
 
+//------------------------------------------------------------------------------
 function main_frame()
 {
     main_time = new Date().getTime();
     main_time_step = main_time - main_last_time;
     
-    minus.frame( main_time_step );
+    g_minus.frame( main_time_step );
     
     // Debug purpose
     main_stats();
@@ -60,16 +147,16 @@ function main_frame()
     main_last_time = main_time;
     main_tick++;
     
-    //setTimeout('main_frame()', MAX_INTERVAL);
     setTimeout( 'main_frame()', 0.0 );
 }
 
+//------------------------------------------------------------------------------
 function main_stats()
 {
     var cur_fps = 1000.0 / main_time_step;
     
     main_fps.push( cur_fps );
-    if ( main_fps.length > 30 )
+    if ( main_fps.length > 1000 )
     {
         main_fps.shift();
     }

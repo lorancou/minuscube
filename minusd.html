@@ -4,17 +4,19 @@
     <title>Minus Cube Debug</title>
     <link rel="shortcut icon" href="minus.ico" />
     <link rel="stylesheet" type="text/css" href="minus.css"></link>
-    <script type="text/javascript" src="js/j3d/trigo.js"></script>
-    <script type="text/javascript" src="js/j3d/intersect.js"></script>
-    <script type="text/javascript" src="js/j3d/matrix.js"></script>
-    <script type="text/javascript" src="js/j3d/vector.js"></script>
-    <script type="text/javascript" src="js/j3d/light.js"></script>
-    <script type="text/javascript" src="js/j3d/firebugx.js"></script>
-    <script type="text/javascript" src="js/j3d/log.js"></script>
-    <script type="text/javascript" src="js/j3d/model.js"></script>
-    <script type="text/javascript" src="js/j3d/util.js"></script>
-    <script type="text/javascript" src="js/j3d/sort.js"></script>
-    <script type="text/javascript" src="js/j3d/clip.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="http://lorancou.free.fr/bulk/jsdep/gl-matrix-min.js"></script>
+    <script type="text/javascript" src="js/ajax3d/trigo.js"></script>
+    <script type="text/javascript" src="js/ajax3d/intersect.js"></script>
+    <script type="text/javascript" src="js/ajax3d/matrix.js"></script>
+    <script type="text/javascript" src="js/ajax3d/vector.js"></script>
+    <script type="text/javascript" src="js/ajax3d/light.js"></script>
+    <script type="text/javascript" src="js/ajax3d/log.js"></script>
+    <script type="text/javascript" src="js/ajax3d/model.js"></script>
+    <script type="text/javascript" src="js/ajax3d/util.js"></script>
+    <script type="text/javascript" src="js/ajax3d/sort.js"></script>
+    <script type="text/javascript" src="js/ajax3d/clip.js"></script>
+    <script type="text/javascript" src="js/webgl/glcore.js"></script>
     <script type="text/javascript" src="js/minus/camera.js"></script>
     <script type="text/javascript" src="js/minus/input.js"></script>
     <script type="text/javascript" src="js/minus/mesh.js"></script>
@@ -24,20 +26,28 @@
     <script type="text/javascript" src="js/minus/main.js"></script>
   </head>
 
-  <body onload="main_init();">
-
-    <div id="title">
-      Minus Cube Debug
-      | <span id="fps">0</span> fps
-      | <span id="avg">0</span> avg
-      | <span id="tri">0</span> tri
+  <body onload="main_init(true);">
+  
+    <div class="column">
+      <div id="title">
+        <span id="fps">0</span> fps
+        | <span id="avg">0</span> avg
+      </div>
+      <div id="canvases">
+        <canvas id="2dcanvas" width="400" height="300"></canvas>
+        <canvas id="glcanvas" width="400" height="300"></canvas>
+      </div>
+      <div id="command">
+        <a href="" onclick="main_use_ajax3d(); return false;">ajax3d</a>
+        | <a href="" onclick="main_use_webgl(); return false;">webgl</a>
+        | <a href="" onclick="minus_input_scramble(); return false;">scramble</a>
+        | <a href="" onclick="minus_input_solve(); return false;">solve</a>
+      </div>
     </div>
-    <div><canvas id="main" width="400" height="300"></canvas></div>
-    <div id="command">
-      <a onclick="minus_input_scramble();">scramble</a>
-      | <a onclick="minus_input_solve();">solve</a>
+      
+    <div class="column">
+      <div id="output"><ul><li>Minus Cube Debug</li></ul></div>
     </div>
-    <div id="output"><ul><li>Minus Cube Debug</li></ul></div>
 
   </body>
 

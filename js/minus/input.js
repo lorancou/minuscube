@@ -51,16 +51,24 @@ function minus_input_init()
 		minus_input_lmb = 1;
 		minus_input_rmb = 3;
 	}
-    
-    main_canvas.onmousedown = minus_input_mouse_down;
-    main_canvas.onmouseup = minus_input_mouse_up;
-    main_canvas.onmouseout = minus_input_mouse_out;
-    main_canvas.onmousemove = minus_input_mouse_move;    
+
+	// listen for inputs on both canvas
+	var canvasesDiv = document.getElementById("canvases");
+	if (!canvasesDiv)
+	{
+		log("ERROR: can't get canvases div");
+	}
+	else
+	{
+		canvasesDiv.onmousedown = minus_input_mouse_down;
+		canvasesDiv.onmouseup = minus_input_mouse_up;
+		canvasesDiv.onmouseout = minus_input_mouse_out;
+		canvasesDiv.onmousemove = minus_input_mouse_move;    
+		canvasesDiv.oncontextmenu = function() { return false; };
+	}
 
     document.onkeydown = minus_input_key_down;
     document.onkeyup = minus_input_key_up;
-
-    main_canvas.oncontextmenu = function() { return false; };
 }
 
 function minus_input_mouse_down(e)
@@ -75,7 +83,7 @@ function minus_input_mouse_down(e)
     switch (button) {
         case minus_input_lmb:
         minus_input_lmb_pressed = true;
-        //main_canvas.onmousemove = minus_input_mouse_move;
+        //g_2dcanvas.onmousemove = minus_input_mouse_move;
         break;
         case minus_input_rmb:
         minus_input_rmb_pressed = true;
@@ -83,8 +91,8 @@ function minus_input_mouse_down(e)
 			minus_input_pick_x = event.clientX;
 			minus_input_pick_y = event.clientY;
 		} else {
-			minus_input_pick_x = e.layerX - main_canvas.offsetLeft;
-			minus_input_pick_y = e.layerY - main_canvas.offsetTop;
+			minus_input_pick_x = e.layerX - g_2dcanvas.offsetLeft;
+			minus_input_pick_y = e.layerY - g_2dcanvas.offsetTop;
 		}
 		//log ( "x=" + minus_input_pick_x );
 		//log ( "y=" + minus_input_pick_y );
@@ -111,7 +119,7 @@ function minus_input_mouse_up(e)
     switch (button) {
         case minus_input_lmb:
         minus_input_lmb_pressed = false;
-        //main_canvas.onmousemove = null;
+        //g_2dcanvas.onmousemove = null;
         break;
         case minus_input_rmb:
         minus_input_rmb_pressed = false;
@@ -123,7 +131,7 @@ function minus_input_mouse_out(e)
 {
     minus_input_prev_valid = false;
     minus_input_lmb_pressed = false;
-    //main_canvas.onmousemove = null;
+    //g_2dcanvas.onmousemove = null;
     minus_input_left_pressed = false;
     minus_input_up_pressed = false;
     minus_input_right_pressed = false;
@@ -139,8 +147,8 @@ function minus_input_mouse_move(e)
 		x = event.clientX;
 		y = event.clientY;
 	} else {
-		x = e.layerX - main_canvas.offsetLeft;
-		y = e.layerY - main_canvas.offsetTop;
+		x = e.layerX - g_2dcanvas.offsetLeft;
+		y = e.layerY - g_2dcanvas.offsetTop;
 	}
     
     if (minus_input_prev_valid) {
@@ -185,12 +193,14 @@ function minus_input_key_up(e)
     }
 }
 
-function minus_input_scramble(e)
+//------------------------------------------------------------------------------
+function minus_input_scramble()
 {
-    minus.cube.scramble();
+    g_minus.cube.scramble();
 }
 
-function minus_input_solve(e)
+//------------------------------------------------------------------------------
+function minus_input_solve()
 {
-    minus.cube.solve();
+    g_minus.cube.solve();
 }

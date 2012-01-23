@@ -4,8 +4,15 @@
 ---------------------------------------------------------------------------------
 
 - Use PHP minify (or equivalent) to build minus.js
-- WebGL instead of j3d
+- WebGL instead of Ajax3d
 - Cursor particles, color shows what can move
 - Cube moving animation
 - Ending
 - Scoring? Timing?
+- Browser fullscreen toggle
+- IE9 support
+- WebGL only for Pokki distrib
+- Advertise WebGL if support missing
+- Handle lost context: http://www.khronos.org/webgl/wiki/HandlingContextLost
+- Error handling function, warning, error, assert (alert + log) etc.
+- Chrome warning fix: event.layerX and event.layerY are broken and deprecated in WebKit

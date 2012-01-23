@@ -1,5 +1,5 @@
 /*
- * minus.js
+ * game.js
  * ----------
  *
  * Minus Cube
@@ -11,13 +11,9 @@
 
 function minus_game()
 {
-    // .. params
-
     var ROT_STEP = PI/30;
     var BACKGROUND_COLOR = "#fefefe";
 
-    // .. public
-    
     this.light = null;
     this.sort = null;
     this.camera = null;
@@ -29,15 +25,19 @@ function minus_game()
     this.noinputrandx = 0.0;
     this.noinputrandy = 0.0;
     
+	//--------------------------------------------------------------------------
     this.init = function()
     {
+		// TODO: remove this in Pokki distrib
         this.light = new ajax3d_light( ajax3d_vector_normalize( [-0.33, 0.0, -0.66, 0.0] ) );
         this.sort = new ajax3d_sort( 64, 200, 8 );
+		
         this.camera = new minus_camera();
         this.cube = new minus_cube();
         minus_input_init();
     }
     
+	//--------------------------------------------------------------------------
     this.frame = function( time_step )
     {
         // Controls
@@ -49,25 +49,21 @@ function minus_game()
         else if ( minus_input_left_pressed )
         {
             this.cube.rotdy = ROT_STEP;
-//             minus_input_left_pressed = false;
             this.noinputtimer = 0.0;
         }
         else if ( minus_input_up_pressed )
         {
             this.cube.rotdx = -ROT_STEP;
-//             minus_input_up_pressed = false;
             this.noinputtimer = 0.0;
         }
         else if ( minus_input_right_pressed )
         {
             this.cube.rotdy = -ROT_STEP;
-//             minus_input_right_pressed = false;
             this.noinputtimer = 0.0;
         }
         else if ( minus_input_down_pressed )
         {
             this.cube.rotdx = ROT_STEP;
-//             minus_input_down_pressed = false;
             this.noinputtimer = 0.0;
         }
         else if ( minus_input_lmb_pressed ) //&& minus_input_prev_valid )
@@ -84,7 +80,11 @@ function minus_game()
             this.noinputtimer += time_step;
             if (this.noinputtimer < 10000.0 )
             {
-                if (!this.update_needed) return;
+				// in release, update and draw only when necessary
+                if (!this.update_needed && !g_dbg)
+				{
+					return;
+				}
                 this.update_needed = false;
             }
             else if (this.noinputtimer < 15000.0)
@@ -133,12 +133,20 @@ function minus_game()
         // Gameplay
         this.cube.frame( time_step );
         
-        // Draw
-        main_ctx.fillStyle = BACKGROUND_COLOR;
-        this.sort.clear(main_ctx);
-        this.sort.begin();
-        this.cube.draw();
-        this.sort.draw(main_ctx);
+        // draw - Ajax3d
+		if (!g_usegl)
+		{
+			g_2dctx.fillStyle = BACKGROUND_COLOR;
+			this.sort.clear(g_2dctx);
+			this.sort.begin();
+			this.cube.draw();
+			this.sort.draw(g_2dctx);
+		}
+        // draw - WebGL
+		else
+		{
+            drawScene(g_glctx);
+		}
 
         // Picking
         if ( this.sort.pick_group )
@@ -153,19 +161,7 @@ function minus_game()
         }
 
         this.cube.store_rotation();
- //        log( "dx = " + minus_input_dx );
-//         log( "dy = " + minus_input_dy );
         minus_input_dx = 0;            
         minus_input_dy = 0;
-
-//         main_ctx.beginPath();
-//         main_ctx.lineWidth = 3;
-//         main_ctx.strokeStyle = "purple";
-//         main_ctx.moveTo( minus_input_prev_x - 5, minus_input_prev_y - 5 );
-//         main_ctx.lineTo( minus_input_prev_x + 5, minus_input_prev_y + 5 );
-//         main_ctx.moveTo( minus_input_prev_x + 5, minus_input_prev_y - 5 );
-//         main_ctx.lineTo( minus_input_prev_x - 5, minus_input_prev_y + 5 );
-//         main_ctx.stroke();
-
     }
 }

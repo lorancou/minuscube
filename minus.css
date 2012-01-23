@@ -1,39 +1,63 @@
 body {
-    /*text-align: center;*/
+}
+
+div.column{
+    font-family: monospace;
+    font-size: 10px;
+	position:relative;
+	float: left;
+    border: 2px solid black;
 }
 
 div#title {
-    width: 396px;
+	z-index: 3;
+	position:absolute;
+	left:0px;
+	top:0px;
+    width: 400px;
+	height:20px;
+	line-height:20px;
     color: black;
-    background-color: white;
-    border: 2px solid black;
-    font-family: monospace;
-    font-size: small;
     text-align: center;
+}
+
+div#canvases{
+	position:relative;
+	width:400px;
+	height:300px;
+}
+
+canvas#2dcanvas {
+	z-index: 1;
+	position:absolute;
+	left:0px;
+	top:0px;
+}
+
+canvas#glcanvas {
+	z-index: 2;
+	position:absolute;
+	left:0px;
+	top:0px;
 }
 
 div#command {
-    width: 396px;
+	z-index: 3;
+	position:absolute;
+	left:0px;
+	top:280px;
+    width: 400px;
+	height:20px;
+	line-height:20px;
     color: black;
-    background-color: white;
-    border: 2px solid black;
-    font-family: monospace;
-    font-size: small;
     text-align: center;
 }
 
-canvas#main {
-    /*border: 2px solid black;*/
-}
-
 div#output {
-    width: 396px;
-    height: 296px;
+    width: 400px;
+    height: 300px;
     color: white;
     background-color: black;
-    border: 2px solid black;
-    font-family: monospace;
-    font-size: small;
 }
 
 ul {
@@ -43,4 +67,24 @@ ul {
 
 li {
     list-style-type: none;
+}
+
+a:link{
+    color: black;
+    text-decoration: none;
+}
+
+a:visited{
+    color: black;
+    text-decoration: none;
+}
+
+a:hover{
+    color: red;
+    text-decoration: underline;
+}
+
+a:active{
+    color: red;
+    text-decoration: underline;
 }
