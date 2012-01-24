@@ -9,81 +9,69 @@
  * This program is free software - see README for details.
  */
 
- 
-//http://stackoverflow.com/a/190878
-function getExtension(filename)
+//------------------------------------------------------------------------------
+function webgl_load_shader(gl, url)
 {
-    //return (/[.]/.exec(filename)) ? /[^.]+$/.exec(filename) : undefined;
-    return filename.split('.').pop();
-}
- 
-// WILD COPY PASTE from http://learningwebg_glctx.com/blog/?p=28
-// TODO this needs cleaning
-
-    function getShader(gl, url) {
-        //var shaderScript = document.getElementById(id);
-        
-        var shaderScript;
-        $.ajax({
-            url: url,
-            dataType: "text",
-            async: false,
-            success: function (data) {
-                shaderScript = data;
-                //log(shaderScript);
-            },
-            error: function () {
-                log("ERROR: could not load shader " + url);
-            }
-        });
-        
-        if (!shaderScript) {
-            return null;
-        }
-
-        /*var str = "";
-        var k = shaderScript.firstChild;
-        while (k) {
-            if (k.nodeType == 3) {
-                str += k.textContent;
-            }
-            k = k.nextSibling;
-        }*/
-
-        var ext = getExtension(url);
-        var shader;
-        if (ext == "fs")
+    // load shader file with jQuery
+    var shaderScript;
+    $.ajax({
+        url: url,
+        dataType: "text",
+        async: false,
+        success: function (data)
         {
-            shader = gl.createShader(gl.FRAGMENT_SHADER);
-        }
-        else if (ext == "vs")
+            shaderScript = data;
+        },
+        error: function ()
         {
-            shader = gl.createShader(gl.VERTEX_SHADER);
+            log("ERROR: could not load shader " + url);
         }
-        else
-        {
-            log("ERROR: unknown shader extension " + url + ", should be fs or vs");
-            return null;
-        }
-
-        gl.shaderSource(shader, shaderScript);
-        gl.compileShader(shader);
-
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-            alert(gl.getShaderInfoLog(shader));
-            return null;
-        }
-
-        return shader;
+    });
+    if (!shaderScript)
+    {
+        return null;
     }
+
+    // create fragment or vertex shader, depending on the extension
+    var ext = url.split('.').pop(); //http://stackoverflow.com/a/190878
+    var shader;
+    if (ext == "fs")
+    {
+        shader = gl.createShader(gl.FRAGMENT_SHADER);
+    }
+    else if (ext == "vs")
+    {
+        shader = gl.createShader(gl.VERTEX_SHADER);
+    }
+    else
+    {
+        log("ERROR: unknown shader extension " + url + ", should be fs or vs");
+        return null;
+    }
+
+    // compile it
+    gl.shaderSource(shader, shaderScript);
+    gl.compileShader(shader);
+
+    // report compile errors (syntax, etc.)
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+    {
+        log(gl.getShaderInfoLog(shader));
+        return null;
+    }
+
+    return shader;
+}
 
 
     var shaderProgram;
 
     function initShaders(gl)
     {
-        var fragmentShader = getShader(gl, g_root + "shader/gouraud.fs");
-        var vertexShader = getShader(gl, g_root + "shader/gouraud.vs");
+        var fragmentShader = webgl_load_shader(gl, g_root + "shader/gouraud.fs");
+        var vertexShader = webgl_load_shader(gl, g_root + "shader/gouraud.vs");
+        //var fragmentShader = webgl_load_shader(gl, g_root + "shader/vertexcolor.fs");
+        //var vertexShader = webgl_load_shader(gl, g_root + "shader/vertexcolor.vs");
 
         shaderProgram = gl.createProgram();
         gl.attachShader(shaderProgram, vertexShader);
@@ -115,20 +103,23 @@ function getExtension(filename)
         shaderProgram.lightDir = gl.getUniformLocation(shaderProgram, "uLightDir");
 
         shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+        shaderProgram.vMatrixUniform = gl.getUniformLocation(shaderProgram, "uVMatrix");
         shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
         shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix"); // normal matrix
     }
 
 
-    var mvMatrix = mat4.create();
     var pMatrix = mat4.create();
-    var nMatrix = mat4.create();
+    var vMatrix = mat4.create();
+    var mvMatrix = mat4.create();
+    var nMatrix = mat3.create();
 
     function setMatrixUniforms(gl)
     {
         gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(shaderProgram.vMatrixUniform, false, vMatrix);
         gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
-        gl.uniformMatrix4fv(shaderProgram.nMatrixUniform, false, nMatrix);
+        gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, nMatrix);
     }
 
 
@@ -148,6 +139,27 @@ function getExtension(filename)
         gl.uniform3fv(shaderProgram.lightDir, lightDir);
     }
     
+
+    var vertices = [];
+    var normals = [];
+    var ambients = [];
+    var diffuses = [];
+
+    function concatVertex(position, normal, material)
+    {
+        for (var i=0; i<3; ++i) // flatten coordinates
+        {
+            vertices = vertices.concat(position[i]);
+            normals = normals.concat(normal[i]);
+        }
+        for (var i=0; i<3; ++i) // flatten colors
+        {
+            ambients = ambients.concat(material.ambient[i]);
+            diffuses = diffuses.concat(material.diffuse[i]);
+        }
+        ambients = ambients.concat(1.0); // alpha missing in Ajax3d material
+        diffuses = diffuses.concat(1.0); // alpha missing in Ajax3d material
+    }
     
 
     var triangleVertexPositionBuffer;
@@ -159,144 +171,215 @@ function getExtension(filename)
 
     function initBuffers(gl)
     {
-        // position
+        var numTriangles = 0;
+        for (var i in minus_mesh.faces)
+        {
+            var numIndices = minus_mesh.faces[i].indices.length;
+            var normal = minus_mesh.normals_ccw[i]; // vertices normals = faces normals... Ajax3d doesn't compute vertices normals, thus flat shading
+            var material = minus_mesh.faces[i].material;
+            if (numIndices == 3)
+            {
+                // one triangle
+                for (var j=0; j<3; ++j)
+                {
+                    var index = minus_mesh.faces[i].indices[j];
+                    concatVertex(minus_mesh.vertices[0][index], normal, material);
+                }
+                
+                numTriangles += 1;
+            }
+            else if (numIndices == 4)
+            {
+                var index0 = minus_mesh.faces[i].indices[0];
+                var index1 = minus_mesh.faces[i].indices[1];
+                var index2 = minus_mesh.faces[i].indices[2];
+                var index3 = minus_mesh.faces[i].indices[3];
+
+                // first triangle
+                concatVertex(minus_mesh.vertices[0][index0], normal, material);
+                concatVertex(minus_mesh.vertices[0][index1], normal, material);
+                concatVertex(minus_mesh.vertices[0][index3], normal, material);
+
+                // second triangle
+                concatVertex(minus_mesh.vertices[0][index1], normal, material);
+                concatVertex(minus_mesh.vertices[0][index2], normal, material);
+                concatVertex(minus_mesh.vertices[0][index3], normal, material);
+
+                numTriangles += 2;
+            }
+            else
+            {
+                log("ERROR: invalid face, " + numIndices + " indices");
+            }
+        }
+        // vertices position
         triangleVertexPositionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
-        var vertices = [
+        /*var vertices = [[
              0.0,  1.0,  0.0,
             -1.0, -1.0,  0.0,
              1.0, -1.0,  0.0
-        ];
+        ]];*/
+        /*var vertices = [];
+        var numVertices = minus_mesh.vertices[0].length;
+        for (var i in minus_mesh.vertices[0])
+        {
+            var vertex = minus_mesh.vertices[0][i];
+            for (var j=0; j<3; ++j)
+            {
+                vertices = vertices.concat(vertex[j]);
+            }
+        }*/
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
         triangleVertexPositionBuffer.itemSize = 3;
-        triangleVertexPositionBuffer.numItems = 3;
-        
-        // normal
+        triangleVertexPositionBuffer.numItems = numTriangles*3;
+
+        // vertices normals = faces normals... Ajax3d doesn't compute vertices normals, thus flat shading
         triangleVertexNormalBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexNormalBuffer);
-        var normals = [
+        /*var normals = [
             0.0, 0.0, 1.0,
             0.0, 0.0, 1.0,
             0.0, 0.0, 1.0
-        ];
+        ];*/
+        /*var normals = [];
+        var numNormals = minus_mesh.normals.length;
+        for (var i in minus_mesh.normals)
+        {
+            var normal = minus_mesh.normals[i];
+            for (var j=0; j<3; ++j)
+            {
+                normals = normals.concat(normal[j]);
+            }
+        }*/
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
         triangleVertexNormalBuffer.itemSize = 3;
-        triangleVertexNormalBuffer.numItems = 3;
+        triangleVertexNormalBuffer.numItems = numTriangles*3;
 
         // ambient
         triangleVertexAmbientBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexAmbientBuffer);
-        var ambients = [
+        /*var ambients = [
             1.0, 1.0, 1.0, 1.0,
             1.0, 1.0, 1.0, 1.0,
             1.0, 1.0, 1.0, 1.0
-        ];
+        ];*/
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(ambients), gl.STATIC_DRAW);
         triangleVertexAmbientBuffer.itemSize = 4;
-        triangleVertexAmbientBuffer.numItems = 3;
+        triangleVertexAmbientBuffer.numItems = numTriangles*3;
 
         // diffuse
         triangleVertexDiffuseBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexDiffuseBuffer);
-        var diffuses = [
-            1.0, 0.0, 0.0, 1.0,
-            0.0, 1.0, 0.0, 1.0,
-            0.0, 0.0, 1.0, 1.0
-        ];
+        /*var diffuses = [
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0
+        ];*/
+        //log(diffuses);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(diffuses), gl.STATIC_DRAW);
         triangleVertexDiffuseBuffer.itemSize = 4;
-        triangleVertexDiffuseBuffer.numItems = 3;
+        triangleVertexDiffuseBuffer.numItems = numTriangles*3;
         
-        /*squareVertexPositionBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
-        vertices = [
-             1.0,  1.0,  0.0,
-            -1.0,  1.0,  0.0,
-             1.0, -1.0,  0.0,
-            -1.0, -1.0,  0.0
-        ];
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-        squareVertexPositionBuffer.itemSize = 3;
-        squareVertexPositionBuffer.numItems = 4;
-        
-        squareVertexColorBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
-        colors = []
-        for (var i=0; i < 4; i++) {
-          colors = colors.concat([0.5, 0.5, 1.0, 1.0]);
+        // log(numTriangles);
+        // log(triangleVertexPositionBuffer.numItems);
+        // log(triangleVertexNormalBuffer.numItems);
+        // log(triangleVertexAmbientBuffer.numItems);
+        // log(triangleVertexDiffuseBuffer.numItems);
+    }
+
+      var mvMatrixStack = [];
+      function mvPushMatrix() {
+        var copy = mat4.create();
+        mat4.set(mvMatrix, copy);
+        mvMatrixStack.push(copy);
+      }
+      function mvPopMatrix() {
+        if (mvMatrixStack.length == 0) {
+          throw "Invalid popMatrix!";
         }
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
-        squareVertexColorBuffer.itemSize = 4;
-        squareVertexColorBuffer.numItems = 4;        */
-    }
-
-
-    function drawScene(gl) {
-        //gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-        //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-        mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
-        mat4.identity(mvMatrix);
-        mat4.translate(mvMatrix, [0.0, 0.0, -7.0]);
-        mat4.identity(nMatrix);
-        mat4.translate(nMatrix, [0.0, 0.0, -7.0]);
-        setMatrixUniforms(gl);
-        
-        setLightUniforms(gl);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
-        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, triangleVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-        gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexNormalBuffer);
-        gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, triangleVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);        
-        gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexAmbientBuffer);
-        gl.vertexAttribPointer(shaderProgram.vertexAmbientAttribute, triangleVertexAmbientBuffer.itemSize, gl.FLOAT, false, 0, 0);        
-        gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexDiffuseBuffer);
-        gl.vertexAttribPointer(shaderProgram.vertexDiffuseAttribute, triangleVertexDiffuseBuffer.itemSize, gl.FLOAT, false, 0, 0);        
-
-        gl.drawArrays(gl.TRIANGLES, 0, triangleVertexPositionBuffer.numItems);
-
-
-        /*mat4.translate(mvMatrix, [3.0, 0.0, 0.0]);
-        gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
-        gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-        
-        gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
-        gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        mvMatrix = mvMatrixStack.pop();
+      }    
     
-        setMatrixUniforms(gl);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);*/
-    }
-
-
-
-    /*function webGLStart() {
-        var canvas = document.getElementById("lesson01-canvas");
-        initGL(canvas);
-        initShaders();
-        initBuffers();
-
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        gl.enable(gl.DEPTH_TEST);
-
-        drawScene();
-    }*/
-        
 //------------------------------------------------------------------------------
-function webgl_init()
+function webgl_init(canvas, gl)
 {
 	// set GL viewport width
-	g_glctx.viewportWidth = g_glcanvas.width;
-    g_glctx.viewportHeight = g_glcanvas.height;
+	gl.viewportWidth = canvas.width;
+    gl.viewportHeight = canvas.height;
 	
-    initShaders(g_glctx);
-    initBuffers(g_glctx);
+    initShaders(gl);
+    initBuffers(gl);
     
+    lightAmbient = new Float32Array([ 0.5, 0.5, 0.5, 1.0 ]);
+    lightDiffuse = new Float32Array([ 1.0, 1.0, 1.0, 1.0 ]);
+    //lightDiffuse = new Float32Array([ 0.0, 0.0, 0.0, 1.0 ]);
+    //lightDir = new Float32Array([ 0.0, -1.0, 0.0 ]);
+    //lightDir = new Float32Array([-0.33, 0.0, -0.66]); // TODO: normals are somewhat inverted in Ajax3d, so the light direction is different there; fix this; prbly a CW vs CCW issue somewhere
+    lightDir = new Float32Array([0.33, 0.0, -0.66]);
     
-    lightAmbient = new Float32Array([ 0.1, 0.1, 0.1, 1.0 ]);
-    lightDiffuse = new Float32Array([ 0.5, 0.5, 0.5, 1.0 ]);
-    lightDir = new Float32Array([ 0.0, 0.0, -1.0 ]);
+    gl.clearColor(0.5, 0.5, 0.5, 1.0);
+    gl.enable(gl.DEPTH_TEST);
     
+    //gl.frontFace(gl.CCW);
+    //gl.cullFace(gl.BACK);
+    gl.enable(gl.CULL_FACE); // yeah... so *NOT* GL_CULL_FACE...
+}
 
-    g_glctx.clearColor(0.5, 0.5, 0.5, 1.0);
-    g_glctx.enable(g_glctx.DEPTH_TEST);
+//------------------------------------------------------------------------------
+function webgl_begin(gl)
+{
+    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    
+    mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+
+    // that's the view matrix
+    mat4.identity(vMatrix);
+    mat4.translate(vMatrix, [0.0, 0.0, -8.0]);
+
+    mat4.set(vMatrix, mvMatrix);
+    //log("mvMatrix:" + mvMatrix);
+    //mat4.translate(mvMatrix, [0.0, 0.0, -8.0]);
+    //mvMatrix = vMatrix;
+}
+
+//------------------------------------------------------------------------------
+function webgl_draw_element(gl, mat)
+{
+    mvPushMatrix();
+
+    // that's the model-view matrix / model position in eye space
+    //mat4.rotate(mvMatrix, degToRad(rotx), [1, 0, 0]);
+    //mat4.rotate(mvMatrix, degToRad(roty), [0, 1, 0]);
+    
+    mat4.multiply(mvMatrix, mat);
+
+    // http://arcsynthesis.org/gltut/Illumination/Tut09%20Normal%20Transformation.html
+    mat4.toInverseMat3(mvMatrix, nMatrix);
+    mat3.transpose(nMatrix);
+    
+    setMatrixUniforms(gl);
+    
+    setLightUniforms(gl);
+    
+    gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, triangleVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexNormalBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, triangleVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);        
+    gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexAmbientBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexAmbientAttribute, triangleVertexAmbientBuffer.itemSize, gl.FLOAT, false, 0, 0);        
+    gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexDiffuseBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexDiffuseAttribute, triangleVertexDiffuseBuffer.itemSize, gl.FLOAT, false, 0, 0);        
+
+    
+    gl.drawArrays(gl.TRIANGLES, 0, triangleVertexPositionBuffer.numItems);
+    
+    mvPopMatrix();
+}
+
+//------------------------------------------------------------------------------
+function webgl_end(gl)
+{
+    // TODO check gl.flush etc.?
 }

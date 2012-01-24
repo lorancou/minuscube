@@ -9,8 +9,10 @@
  * This program is free software - see README for details.
  */
 
-var material_red = {ambient: [0.5, 0.0, 0.0], diffuse: [0.5, 0.0, 0.0], specular: [1.0, 1.0, 1.0], phong: 4.0};
-var material_white = {ambient: [0.5, 0.5, 0.5], diffuse: [0.5, 0.5, 0.5], specular: [1.0, 1.0, 1.0], phong: 4.0};
+var material_red = {ambient: [0.5, 0.0, 0.0], diffuse: [1.0, 0.0, 0.0], specular: [1.0, 1.0, 1.0], phong: 4.0};
+var material_green = {ambient: [0.0, 0.5, 0.0], diffuse: [0.0, 1.0, 0.0], specular: [1.0, 1.0, 1.0], phong: 4.0};
+var material_blue = {ambient: [0.0, 0.0, 0.5], diffuse: [0.0, 0.0, 1.0], specular: [1.0, 1.0, 1.0], phong: 4.0};
+var material_white = {ambient: [0.5, 0.5, 0.5], diffuse: [1.0, 1.0, 1.0], specular: [1.0, 1.0, 1.0], phong: 4.0};
 
 var minus_mesh = {
 	vertices: [[
@@ -103,3 +105,60 @@ var minus_mesh = {
 
 ajax3d_model_make_normals( minus_mesh );
 ajax3d_model_make_centers( minus_mesh );
+
+/*var minus_mesh = {
+	vertices: [[
+        // Front face
+        [ -1.0, -1.0,  1.0 ],
+        [  1.0, -1.0,  1.0 ],
+        [  1.0,  1.0,  1.0 ],
+        [ -1.0,  1.0,  1.0 ],
+
+        // Back face
+        [ -1.0, -1.0, -1.0 ],
+        [ -1.0,  1.0, -1.0 ],
+        [  1.0,  1.0, -1.0 ],
+        [  1.0, -1.0, -1.0 ],
+
+        // Top face
+        [ -1.0,  1.0, -1.0 ],
+        [ -1.0,  1.0,  1.0 ],
+        [  1.0,  1.0,  1.0 ],
+        [  1.0,  1.0, -1.0 ],
+
+        // Bottom face
+        [ -1.0, -1.0, -1.0 ],
+        [  1.0, -1.0, -1.0 ],
+        [  1.0, -1.0,  1.0 ],
+        [ -1.0, -1.0,  1.0 ],
+
+        // Right face
+        [  1.0, -1.0, -1.0 ],
+        [  1.0,  1.0, -1.0 ],
+        [  1.0,  1.0,  1.0 ],
+        [  1.0, -1.0,  1.0 ],
+
+        // Left face
+        [ -1.0, -1.0, -1.0 ],
+        [ -1.0, -1.0,  1.0 ],
+        [ -1.0,  1.0,  1.0 ],
+        [ -1.0,  1.0, -1.0 ]
+	]],
+	faces: [
+        { indices: [ 0, 1, 2 ], material: material_blue }, // front
+        { indices: [ 0, 2, 3 ], material: material_blue },
+        { indices: [ 4, 5, 6 ], material: material_white }, // back
+        { indices: [ 4, 6, 7 ], material: material_white },
+        { indices: [ 8, 9, 10 ], material: material_green }, // top
+        { indices: [ 8, 10, 11 ], material: material_green },
+        { indices: [ 12, 13, 14 ], material: material_white }, // bottom
+        { indices: [ 12, 14, 15 ], material: material_white },
+        { indices: [ 16, 17, 18 ], material: material_red }, // right
+        { indices: [ 16, 18, 19 ], material: material_red },
+        { indices: [ 20, 21, 22 ], material: material_white }, // left
+        { indices: [ 20, 22, 23 ], material: material_white }
+	]
+};
+
+ajax3d_model_make_normals( minus_mesh );
+ajax3d_model_make_centers( minus_mesh );*/

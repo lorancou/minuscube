@@ -4,7 +4,7 @@
 ---------------------------------------------------------------------------------
 
 - Use PHP minify (or equivalent) to build minus.js
-- WebGL instead of Ajax3d
+- WebGL renderer **WIP**
 - Cursor particles, color shows what can move
 - Cube moving animation
 - Ending
@@ -15,4 +15,7 @@
 - Handle lost context: http://www.khronos.org/webgl/wiki/HandlingContextLost
 - Error handling function, warning, error, assert (alert + log) etc.
 - Chrome warning fix: event.layerX and event.layerY are broken and deprecated in WebKit
-- Specular + Phong
+- Specular (both in WebGL and Ajax3d) + Phong (pbly WebGL only)
+- Unify matrices
+- Unify CW vs CCW front face
+- Figure out why Ajax3d coordinate system is "upside-down"

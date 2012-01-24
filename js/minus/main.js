@@ -118,12 +118,12 @@ function main_init(dbg, root)
 	else if (g_glctx = g_glcanvas.getContext("webgl"))
 	{
         log("WebGL supported");
-		webgl_init(g_glctx);
+		webgl_init(g_glcanvas, g_glctx);
 	}
     else if (g_glctx = g_glcanvas.getContext("experimental-webgl"))
     {
         log("WARNING: experimental WebGL support");
-		webgl_init(g_glctx);
+		webgl_init(g_glcanvas, g_glctx);
 	}
 	else
 	{

@@ -18,8 +18,8 @@ function minus_cube()
     // .. public
 
     this.padding = 1.0;
-    this.rotdx = 2.0 * Math.random() * PI - PI;
-    this.rotdy = 2.0 * Math.random() * PI - PI;
+    this.rotdx = 0.0; //2.0 * Math.random() * PI - PI;
+    this.rotdy = 0.0; //2.0 * Math.random() * PI - PI;
 
     this.frame = function( time_step )
     {
@@ -36,7 +36,15 @@ function minus_cube()
         for ( var e = 0; e < __element.length; e++ )
         {
             if ( e != 0 ) //|| parseInt( main_time / 200 ) % 2 == 0 )
-                __element[e].draw( ajax3d_matrix_multiply( __rotxy, __rotdxy ), e, __slot_pos[ __element[e].slot ] );
+            {
+                var rotxy = ajax3d_matrix_multiply( __rotxy, __rotdxy );
+                
+                var rotxy_GL = mat4.create();
+                mat4.multiply(__rotxy_GL, __rotdxy_GL, rotxy_GL);
+                mat4.inverse(rotxy_GL);
+                
+                __element[e].draw(rotxy, rotxy_GL, e, __slot_pos[ __element[e].slot ] );
+            }
         }
     }
 
@@ -48,6 +56,11 @@ function minus_cube()
         var new_rotxy = ajax3d_matrix_multiply( __rotxy, __rotdxy );
         __rotxy = new_rotxy;
         __rotdxy = ajax3d_matrix_identity();
+
+        var new_rotxy_GL = mat4.create();
+        mat4.multiply(__rotxy_GL, __rotdxy_GL, new_rotxy_GL);
+        mat4.set(new_rotxy_GL, __rotxy_GL);
+        mat4.identity(__rotdxy_GL);
     }
 
     this.interact = function( screen_x, screen_y )
@@ -142,6 +155,8 @@ function minus_cube()
     var __neighbor;
     var __rotxy;
     var __rotdxy;
+    var __rotxy_GL = mat4.create();
+    var __rotdxy_GL = mat4.create();
 
     function __construct()
     {
@@ -176,7 +191,7 @@ function minus_cube()
         __slot_pos[4] = [  p, -p, -p ];
         __slot_pos[5] = [  p, -p,  p ];
         __slot_pos[6] = [  p,  p, -p ];
-        __slot_pos[7] = [  p,  p,  p ];
+        __slot_pos[7] = [  1.5*p,  1.5*p,  1.5*p ];
 
         __neighbor = new Array(8);
         __neighbor[0] = [ 1, 2, 4 ];
@@ -190,6 +205,9 @@ function minus_cube()
 
         __rotxy = ajax3d_matrix_identity();
         __rotdxy = ajax3d_matrix_identity();
+        
+        mat4.identity(__rotxy_GL);
+        mat4.identity(__rotdxy_GL);
     }
 
     function __update_rotation( time_step )
@@ -198,6 +216,10 @@ function minus_cube()
             ajax3d_matrix_rotate_x( __this.rotdx ),
             ajax3d_matrix_rotate_y( __this.rotdy )
         );
+    
+        mat4.identity(__rotdxy_GL);
+        mat4.rotate(__rotdxy_GL, __this.rotdx, [1, 0, 0]);
+        mat4.rotate(__rotdxy_GL, __this.rotdy, [0, 1, 0]);
     }
 
     function __switch_elements( e1, e2 )

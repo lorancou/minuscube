@@ -60,7 +60,7 @@ function ajax3d_light(dir)
 			}
 			
 			// Specular component
-			if (normal != null && center != null)
+			/*if (normal != null && center != null)
 			{
 				var v1 = ajax3d_vector_subtract(center, eye_internal, work1);
 				var dot = ajax3d_vector_dot(v1, normal);
@@ -78,7 +78,7 @@ function ajax3d_light(dir)
 					g += material.specular[1] * spec;
 					b += material.specular[2] * spec;
 				}
-			}
+			}*/
 			
 			// Generate HTML color
 			return ajax3d_util_rgbcolor(r * 256, g * 256, b * 256);

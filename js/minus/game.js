@@ -106,7 +106,7 @@ function minus_game()
                 }
                 this.update_needed = false;
             }
-            else if (this.noinputtimer < 15000.0)
+            /*else if (this.noinputtimer < 15000.0)
             {
                 if (!this.update_needed)
                 {
@@ -142,7 +142,7 @@ function minus_game()
                 }
                 this.cube.rotdx = this.noinputspeed * this.noinputrandx;
                 this.cube.rotdy = this.noinputspeed * this.noinputrandy;
-            }
+            }*/
         }
         
         // Camera
@@ -164,12 +164,13 @@ function minus_game()
         // draw - WebGL
         else if (g_renderer == "WebGL")
         {
-            g_glctx.clearColor(BG_COLOR_R, BG_COLOR_G, BG_COLOR_B, BG_COLOR_A);
-            g_glctx.viewport(0, 0, g_glctx.viewportWidth, g_glctx.viewportHeight);
-            g_glctx.clear(g_glctx.COLOR_BUFFER_BIT | g_glctx.DEPTH_BUFFER_BIT);
+            g_glctx.clearColor(BG_COLOR_R, BG_COLOR_G, BG_COLOR_B, BG_COLOR_A); // TODO move to webgl_begin
             
-            drawScene(g_glctx);
+            webgl_begin(g_glctx);
+            this.cube.draw();
+            webgl_end(g_glctx);
         }
+
 
         // Picking
         if ( this.sort.pick_group )

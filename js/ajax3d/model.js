@@ -20,17 +20,18 @@
 function ajax3d_model_make_normals(model)
 {
    model.normals = new Array(model.faces.length);
+   model.normals_ccw = new Array(model.faces.length);
    
    for (var i = 0; i < model.faces.length; i++) {
-      var v1 = ajax3d_vector_subtract(model.vertices[0][model.faces[i].indices[2]], model.vertices[0][model.faces[i].indices[0]]);
-      var v2 = ajax3d_vector_subtract(model.vertices[0][model.faces[i].indices[1]], model.vertices[0][model.faces[i].indices[0]]);
-      
-      model.normals[i] = ajax3d_vector_normalize(ajax3d_vector_cross(v2, v1));
+       
+      var v1 = ajax3d_vector_subtract(model.vertices[0][model.faces[i].indices[1]], model.vertices[0][model.faces[i].indices[0]]);
+      var v2 = ajax3d_vector_subtract(model.vertices[0][model.faces[i].indices[2]], model.vertices[0][model.faces[i].indices[0]]);
 
-//        model.normals[i][0] = -model.normals[i][0];
-//        model.normals[i][1] = -model.normals[i][1];
-//        model.normals[i][2] = -model.normals[i][2];
-//        model.normals[i][3] = -model.normals[i][3];
+      // CW for Ajax3d
+      model.normals[i] = ajax3d_vector_normalize(ajax3d_vector_cross(v1, v2));
+
+      // CCW for WebGL
+      model.normals_ccw[i] = ajax3d_vector_normalize(ajax3d_vector_cross(v2, v1));
 
       model.faces[i].normal = i;
    }
