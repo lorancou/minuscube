@@ -133,11 +133,11 @@ function main_init(dbg, root)
     }
 	
 	// choose renderer
-    if (g_glctx)
+    /*if (g_glctx)
     {
         main_use_webgl();
     }
-    else
+    else*/
     {
         main_use_ajax3d();
     }

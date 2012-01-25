@@ -48,7 +48,7 @@ function minus_game()
     this.init = function()
     {
         // TODO: remove this in Pokki distrib
-        this.light = new ajax3d_light( ajax3d_vector_normalize( [-0.33, 0.0, -0.66, 0.0] ) );
+        this.light = new ajax3d_light( vec3.create( [-0.33, 0.0, -0.66] ) );
         this.sort = new ajax3d_sort( 64, 200, 8 );
         
         this.camera = new minus_camera();
@@ -67,7 +67,7 @@ function minus_game()
         }
         else if ( minus_input_left_pressed )
         {
-            this.cube.rotdy = ROT_STEP;
+            this.cube.rotdy = -ROT_STEP;
             this.noinputtimer = 0.0;
         }
         else if ( minus_input_up_pressed )
@@ -77,7 +77,7 @@ function minus_game()
         }
         else if ( minus_input_right_pressed )
         {
-            this.cube.rotdy = -ROT_STEP;
+            this.cube.rotdy = ROT_STEP;
             this.noinputtimer = 0.0;
         }
         else if ( minus_input_down_pressed )
@@ -88,7 +88,7 @@ function minus_game()
         else if ( minus_input_lmb_pressed ) //&& minus_input_prev_valid )
         {
             this.cube.rotdx = minus_input_dy / 100.0;
-            this.cube.rotdy = - minus_input_dx / 100.0;
+            this.cube.rotdy = minus_input_dx / 100.0;
             this.noinputtimer = 0.0;
         }
         else

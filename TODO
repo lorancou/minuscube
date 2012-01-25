@@ -16,6 +16,3 @@
 - Error handling function, warning, error, assert (alert + log) etc.
 - Chrome warning fix: event.layerX and event.layerY are broken and deprecated in WebKit
 - Specular (both in WebGL and Ajax3d) + Phong (pbly WebGL only)
-- Unify matrices
-- Unify CW vs CCW front face
-- Figure out why Ajax3d coordinate system is "upside-down"

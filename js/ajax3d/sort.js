@@ -147,13 +147,38 @@ function ajax3d_sort(buckets, cells, bounds)
                 var i1 = face.indices[1];
                 var i2 = face.indices[2];
                 
-                var v0 = i0 < thresh ? vertices0[i0] : vertices1[i0 - thresh];
-                var v1 = i1 < thresh ? vertices0[i1] : vertices1[i1 - thresh];
-                var v2 = i2 < thresh ? vertices0[i2] : vertices1[i2 - thresh];
+                var v0;
+                var v1;
+                var v2;
+                if (i0 < thresh)
+                {
+                    v0 = vertices0[i0]
+                }
+                else
+                {
+                    v0 = vertices1[i0 - thresh];
+                }
+                if (i1 < thresh)
+                {
+                    v1 = vertices0[i1]
+                }
+                else
+                {
+                    v1 = vertices1[i1 - thresh];
+                }
+                if (i2 < thresh)
+                {
+                    v2 = vertices0[i2]
+                }
+                else
+                {
+                    v2 = vertices1[i2 - thresh];
+                }
                 
-                var wind = (v1[0] - v0[0]) * (v2[1] - v0[1]) - (v2[0] - v0[0]) * (v1[1] - v0[1]);
+                var determinant = (v1[0] - v0[0]) * (v2[1] - v0[1]) - (v2[0] - v0[0]) * (v1[1] - v0[1]);
                 
-                 if (wind > 0.0)
+                // back face culling
+                 if (determinant > 0.0)
                      continue;
             }
             
@@ -199,6 +224,9 @@ function ajax3d_sort(buckets, cells, bounds)
                         x = vertices1[index - thresh][0];
                         y = vertices1[index - thresh][1];
                     }
+                    
+                    // x = g_2dcanvas.width * (x + 1.0) / 2.0
+                    // y = g_2dcanvas.height * (1.0 - ((y + 1.0) / 2.0))
                     
                     if (this.log) {
                         log(k + ': ' + x + ", " + y + "<br>");

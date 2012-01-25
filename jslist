@@ -1,13 +1,10 @@
 js/ajax3d/trigo.js
 js/ajax3d/intersect.js
-js/ajax3d/matrix.js
-js/ajax3d/vector.js
 js/ajax3d/light.js
 js/ajax3d/log.js
 js/ajax3d/model.js
 js/ajax3d/util.js
 js/ajax3d/sort.js
-js/ajax3d/clip.js
 js/webgl/glcore.js
 js/minus/camera.js
 js/minus/input.js

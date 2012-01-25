@@ -175,7 +175,7 @@ function webgl_load_shader(gl, url)
         for (var i in minus_mesh.faces)
         {
             var numIndices = minus_mesh.faces[i].indices.length;
-            var normal = minus_mesh.normals_ccw[i]; // vertices normals = faces normals... Ajax3d doesn't compute vertices normals, thus flat shading
+            var normal = minus_mesh.normals[i]; // vertices normals = faces normals... Ajax3d doesn't compute vertices normals, thus flat shading
             var material = minus_mesh.faces[i].material;
             if (numIndices == 3)
             {
@@ -337,6 +337,8 @@ function webgl_begin(gl)
     // that's the view matrix
     mat4.identity(vMatrix);
     mat4.translate(vMatrix, [0.0, 0.0, -8.0]);
+    //mat4.rotate(vMatrix, 0.5, [1, 0, 0]);
+    //mat4.rotate(vMatrix, 0.5, [0, 1, 0]);
 
     mat4.set(vMatrix, mvMatrix);
     //log("mvMatrix:" + mvMatrix);

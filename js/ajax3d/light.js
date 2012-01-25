@@ -19,21 +19,25 @@
 
 function ajax3d_light(dir)
 {
-	this.dir = dir;
-	this.eye = [0, 0, 0, 1];
+	this.dir = vec3.create(dir);
+	//this.eye = [0, 0, 0, 1];
 	
-	var dir_internal;
-	var eye_internal;
+	var dir_internal = vec3.create();
+	//var eye_internal;
 
-	var work1 = [0, 0, 0, 0];
-	var work2 = [0, 0, 0, 0];
+	//var work1 = [0, 0, 0, 0];
+	//var work2 = [0, 0, 0, 0];
     
 	this.transform = function(matrix) 
 	{
-		var inverse = ajax3d_matrix_invert_simple(matrix);
+		//var inverse = ajax3d_matrix_invert_simple(matrix);
+        var inverse = mat4.create(matrix);
+        mat4.inverse(inverse);
 		
-		dir_internal = ajax3d_matrix_multiply([this.dir], inverse)[0];
-		eye_internal = ajax3d_matrix_multiply([this.eye], inverse)[0];
+		//dir_internal = ajax3d_matrix_multiply([this.dir], inverse)[0];
+        mat4.multiplyVec3(inverse, dir, dir_internal);
+        
+		//eye_internal = ajax3d_matrix_multiply([this.eye], inverse)[0];
 	};
 	
 	this.light_face = function(normal, center, material)
@@ -50,13 +54,14 @@ function ajax3d_light(dir)
 			var b = material.ambient[2];
 			
 			// Diffuse component
-			var diff = ajax3d_vector_dot(normal, dir_internal);
+			//var diff = ajax3d_vector_dot(normal, dir_internal);
+            var cosine = vec3.dot(normal, dir_internal);
 
-			if (diff > 0)
+			if (cosine > 0)
 			{
-				r += material.diffuse[0] * diff;
-				g += material.diffuse[1] * diff;
-				b += material.diffuse[2] * diff;
+				r += material.diffuse[0] * cosine;
+				g += material.diffuse[1] * cosine;
+				b += material.diffuse[2] * cosine;
 			}
 			
 			// Specular component

@@ -33,19 +33,22 @@ function minus_cube()
 
     this.draw = function()
     {
+        //var rotxy = ajax3d_matrix_multiply( __rotxy, __rotdxy );
+        //var rotxy = ajax3d_matrix_identity();
+        
+        var rotxy = mat4.create();
+        mat4.multiply(__rotxy, __rotdxy, rotxy);
+        //mat4.identity(rotxy_GL);
+        
         for ( var e = 0; e < __element.length; e++ )
         {
             if ( e != 0 ) //|| parseInt( main_time / 200 ) % 2 == 0 )
             {
-                var rotxy = ajax3d_matrix_multiply( __rotxy, __rotdxy );
-                
-                var rotxy_GL = mat4.create();
-                mat4.multiply(__rotxy_GL, __rotdxy_GL, rotxy_GL);
-                mat4.inverse(rotxy_GL);
-                
-                __element[e].draw(rotxy, rotxy_GL, e, __slot_pos[ __element[e].slot ] );
+                __element[e].draw(rotxy, e, __slot_pos[ __element[e].slot ] );
             }
         }
+            
+        //__element[0].draw(rotxy, 0, [0.0, 0.0, 0.0] );
     }
 
     this.store_rotation = function()
@@ -53,19 +56,19 @@ function minus_cube()
         this.rotdx = 0.0;
         this.rotdy = 0.0;
 
-        var new_rotxy = ajax3d_matrix_multiply( __rotxy, __rotdxy );
-        __rotxy = new_rotxy;
-        __rotdxy = ajax3d_matrix_identity();
+        // var new_rotxy = ajax3d_matrix_multiply( __rotxy, __rotdxy );
+        // __rotxy = new_rotxy;
+        // __rotdxy = ajax3d_matrix_identity();
 
-        var new_rotxy_GL = mat4.create();
-        mat4.multiply(__rotxy_GL, __rotdxy_GL, new_rotxy_GL);
-        mat4.set(new_rotxy_GL, __rotxy_GL);
-        mat4.identity(__rotdxy_GL);
+        var new_rotxy = mat4.create();
+        mat4.multiply(__rotdxy, __rotxy, new_rotxy);
+        mat4.set(new_rotxy, __rotxy);
+        mat4.identity(__rotdxy);
     }
 
     this.interact = function( screen_x, screen_y )
     {
-        var ray_screen_org = [ screen_x, screen_y, 0.0, 1.0 ];
+        /*var ray_screen_org = [ screen_x, screen_y, 0.0, 1.0 ];
         var ray_screen_dir = [ 0.0, 0.0, 1.0, 1.0 ];
 
         var ray_world_org = ajax3d_matrix_multiply( [ray_screen_org], g_minus.camera.inv_projection() )[0];
@@ -86,7 +89,7 @@ function minus_cube()
             {
                 log( "element " + e + " interesects!" );
             }
-        }
+        }*/
     }
 
     this.interact = function( e )
@@ -153,10 +156,10 @@ function minus_cube()
     var __slot;
     var __slot_pos;
     var __neighbor;
-    var __rotxy;
-    var __rotdxy;
-    var __rotxy_GL = mat4.create();
-    var __rotdxy_GL = mat4.create();
+    // var __rotxy;
+    // var __rotdxy;
+    var __rotxy = mat4.create();
+    var __rotdxy = mat4.create();
 
     function __construct()
     {
@@ -203,23 +206,23 @@ function minus_cube()
         __neighbor[6] = [ 2, 4, 7 ];
         __neighbor[7] = [ 3, 5, 6 ];
 
-        __rotxy = ajax3d_matrix_identity();
-        __rotdxy = ajax3d_matrix_identity();
+        // __rotxy = ajax3d_matrix_identity();
+        // __rotdxy = ajax3d_matrix_identity();
         
-        mat4.identity(__rotxy_GL);
-        mat4.identity(__rotdxy_GL);
+        mat4.identity(__rotxy);
+        mat4.identity(__rotdxy);
     }
 
     function __update_rotation( time_step )
     {
-        __rotdxy = ajax3d_matrix_multiply(
-            ajax3d_matrix_rotate_x( __this.rotdx ),
-            ajax3d_matrix_rotate_y( __this.rotdy )
-        );
+        // __rotdxy = ajax3d_matrix_multiply(
+            // ajax3d_matrix_rotate_x( __this.rotdx ),
+            // ajax3d_matrix_rotate_y( __this.rotdy )
+        // );
     
-        mat4.identity(__rotdxy_GL);
-        mat4.rotate(__rotdxy_GL, __this.rotdx, [1, 0, 0]);
-        mat4.rotate(__rotdxy_GL, __this.rotdy, [0, 1, 0]);
+        mat4.identity(__rotdxy);
+        mat4.rotate(__rotdxy, __this.rotdx, [1, 0, 0]);
+        mat4.rotate(__rotdxy, __this.rotdy, [0, 1, 0]);
     }
 
     function __switch_elements( e1, e2 )
