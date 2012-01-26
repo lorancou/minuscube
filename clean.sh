@@ -5,6 +5,7 @@ rm -rf .gitignore~
 rm -rf *~
 rm -rf js/*~
 rm -rf js/#*#
+rm -rf js/dep/
 
 echo "Cleaning distrib/pokki..."
 rm -f distrib/pokki/minus.js

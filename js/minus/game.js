@@ -16,20 +16,7 @@ function minus_game()
     
     //--------------------------------------------------------------------------
     // backdrop color
-    // TODO: color class? from some lib?
-    var BG_COLOR_R = 0.5; // 0.996
-    var BG_COLOR_G = 0.5; // 0.996
-    var BG_COLOR_B = 0.5; // 0.996
-    var BG_COLOR_A = 1.0; // 0.996
-    var BG_COLOR_CSS = "rgba("
-                     + Math.round(BG_COLOR_R*256)
-                     + ","
-                     + Math.round(BG_COLOR_G*256)
-                     + ","
-                     + Math.round(BG_COLOR_B*256)
-                     + ","
-                     + BG_COLOR_A
-                     + ")";
+    var BG_COLOR = [0.5, 0.5, 0.5, 1.0]; // 0.996
 
     //--------------------------------------------------------------------------
     this.light = null;
@@ -153,7 +140,7 @@ function minus_game()
         this.cube.frame( time_step );
         
         // draw - Ajax3d
-        if (g_renderer == "Ajax3d")
+        /*if (MC.renderer == "Ajax3d")
         {
             g_2dctx.fillStyle = BG_COLOR_CSS;
             this.sort.clear(g_2dctx);
@@ -162,15 +149,20 @@ function minus_game()
             this.sort.draw(g_2dctx);
         }
         // draw - WebGL
-        else if (g_renderer == "WebGL")
+        else if (MC.renderer == "WebGL")
         {
             g_glctx.clearColor(BG_COLOR_R, BG_COLOR_G, BG_COLOR_B, BG_COLOR_A); // TODO move to webgl_begin
             
             webgl_begin(g_glctx);
             this.cube.draw();
             webgl_end(g_glctx);
-        }
+        }*/
 
+        // draw
+        MC.renderer.clear(BG_COLOR);
+        MC.renderer.begin();
+        this.cube.draw();
+        MC.renderer.end();
 
         // Picking
         if ( this.sort.pick_group )

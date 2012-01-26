@@ -6,6 +6,7 @@ upload.*.sh
 TAGS
 minus.js
 bulk
+js/dep
 
 distrib/pokki/minus.js
 distrib/pokki/shader

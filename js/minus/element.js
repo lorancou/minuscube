@@ -24,30 +24,19 @@ function minus_element( type, id )
 
     this.draw = function( rotxy, group, position )
     {
-        //var cam_mat = g_minus.camera.projection();
-        var cam_mat = mat4.create();
-        mat4.multiply(vMatrix, pMatrix, cam_mat);
-        
         var mat = mat4.create();
         mat4.identity(mat);
         mat4.translate(mat, position);
-        //mat4.multiply(mat, __rotxz_mat); // element self rotation
+        mat4.multiply(mat, __rotxz_mat); // element self rotation
         mat4.multiply(rotxy, mat, mat); // whole cube rotation
         
-        if (g_renderer == "Ajax3d")
+        //MC.renderer.draw_mesh(minus_mesh, mat); TODO
+        MC.renderer.drawElement(mat, group);
+        
+        /*if (MC.renderer == "Ajax3d")
         {
             var mesh_transformed = null;
             var mesh_projected = null;
-
-            /*var cam_mat = g_minus.camera.projection();
-            //var cam_mat = g_minus.debugcam.projection(0, 0, -10, 0, 0);
-            var trans_mat = ajax3d_matrix_translate( position[0], position[1], position[2] );
-            //var trans_mat = ajax3d_matrix_identity();
-
-            //var mat = ajax3d_matrix_multiply( __rotxz_mat, trans_mat ); // element self rotation
-            var mat = trans_mat;
-            var mat2 = ajax3d_matrix_multiply( mat, rotxy ); // whole cube rotation
-            //var mat2 = ajax3d_matrix_multiply( trans_mat, rotxy ); // whole cube rotation*/
 
             g_minus.light.light_model( minus_mesh, mat );
 
@@ -89,11 +78,6 @@ function minus_element( type, id )
                 mvpMatrix,
                 mesh_transformed // API!!!
             );
-        
-            /*mesh_projected =ajax3d_model_dehomogenize(
-                mesh_transformed,
-                mesh_projected
-            );*/
 
             g_minus.sort.add_model( mesh_transformed, group );
         }
@@ -106,7 +90,7 @@ function minus_element( type, id )
             // mat4.multiply(rotxy_GL, mat, mat); // whole cube rotation
             
             webgl_draw_element(g_glctx, mat);
-        }
+        }*/
     }
 
     // .. private

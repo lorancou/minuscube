@@ -13,13 +13,15 @@
 var g_dbg = false;
 var g_root = "";
  
-// 2D + WebGL canvas and context
+// 2D + WebGL canvas, context and renderers
 // NB: seems that having both context with one canvas isn't supported
 var g_2dcanvas = null;
 var g_2dctx = null;
+var g_c2renderer = null;
 var g_glcanvas = null;
 var g_glctx = null;
-var g_renderer = null;
+var g_glrenderer = null;
+MC.renderer = null;
 
 // for stats
 var main_time_step = 0.0;
@@ -32,77 +34,80 @@ var main_fps = [];
 var g_minus = null;
 
 //------------------------------------------------------------------------------
-function main_use_ajax3d()
+function main_use_c2renderer()
 {
-    if (g_renderer == "Ajax3d")
+    if (MC.renderer == g_c2renderer)
     {
-        log("already rendering with Ajax3d");
+        log("already rendering with 2D canvas context");
         return;
     }
-	g_renderer = "Ajax3d";
+    MC.renderer = g_c2renderer;
+    
+    g_c2renderer.turnOn();
+    g_glrenderer.turnOff();
 
-	if (g_minus) g_minus.update_needed = true;
-    if (g_2dcanvas) g_2dcanvas.style.visibility='visible';
-    if (g_glcanvas) g_glcanvas.style.visibility='hidden';
-    log("rendering with Ajax3d (2D canvas context)");
+    if (g_minus) g_minus.update_needed = true;
+    log("rendering with 2D canvas context");
 }
 
 //------------------------------------------------------------------------------
-function main_use_webgl()
+function main_use_glrenderer()
 {
-	if (!g_glctx)
-	{
-		log("ERROR: can't use WebGL");
-		return;
-	}
-
-    if (g_renderer == "WebGL")
+    if (!g_glrenderer)
     {
-        log("already rendering with WebGL");
+        log("ERROR: can't use WebGL");
         return;
     }
-	g_renderer = "WebGL";
+
+    if (MC.renderer == g_glrenderer)
+    {
+        log("already rendering with WebGL canvas context");
+        return;
+    }
+    MC.renderer = g_glrenderer;
+    
+    g_c2renderer.turnOff();
+    g_glrenderer.turnOn();
     
     if (g_minus) g_minus.update_needed = true;
-    if (g_2dcanvas) g_2dcanvas.style.visibility='hidden';
-    if (g_glcanvas) g_glcanvas.style.visibility='visible';
-    log("rendering with WebGL");
+    log("rendering with WebGL canvas context");
 }
 
 //------------------------------------------------------------------------------
 function main_init(dbg, root)
 {
     log( "initializing..." );
-	
-	// activate debug stuff
-	if (dbg)
-	{
-		log("debug features on");
-		g_dbg = true;
-	}
+    
+    // activate debug stuff
+    if (dbg)
+    {
+        log("debug features on");
+        g_dbg = true;
+    }
 
-	// set root
-	if (root)
-	{
-		log("using root: " + root);
-		g_root = root;
-	}
+    // set root
+    if (root)
+    {
+        log("using root: " + root);
+        g_root = root;
+    }
 
-    // try to get 2D context
+    // try to get 2D context, init renderer
     g_2dcanvas = document.getElementById("2dcanvas");
     if (!g_2dcanvas)
     {
         log("ERROR: missing 2D canvas element");
         return;
     }
-	g_2dctx = g_2dcanvas.getContext('2d');
-	if (!g_2dctx)
-	{
-		log("ERROR: can't initialize 2D context");
-		return;
-	}
+    g_2dctx = g_2dcanvas.getContext('2d');
+    if (!g_2dctx)
+    {
+        log("ERROR: can't initialize 2D context");
+        return;
+    }
+    g_c2renderer = new MC.Canvas2DRenderer(g_2dcanvas, g_2dctx);
 
-    // try to get WebGL context
+    // try to get WebGL context, init renderer
     // http://www.khronos.org/webgl/wiki/FAQ#What_is_the_recommended_way_to_initialize_WebGL.3F
     g_glcanvas = document.getElementById("glcanvas");
     if (!g_glcanvas)
@@ -115,34 +120,34 @@ function main_init(dbg, root)
         // the browser doesn't even know what WebGL is
         //window.location = "http://get.webgl.org";
     }
-	else if (g_glctx = g_glcanvas.getContext("webgl"))
-	{
+    else if (g_glctx = g_glcanvas.getContext("webgl"))
+    {
         log("WebGL supported");
-		webgl_init(g_glcanvas, g_glctx);
-	}
+        g_glrenderer = new MC.WebGLRenderer(g_glcanvas, g_glctx);
+    }
     else if (g_glctx = g_glcanvas.getContext("experimental-webgl"))
     {
         log("WARNING: experimental WebGL support");
-		webgl_init(g_glcanvas, g_glctx);
-	}
-	else
-	{
-		// browser supports WebGL but initialization failed.
-		//window.location = "http://get.webgl.org/troubleshooting";
-		log("WARNING: can't initialize WebGL context");
+        g_glrenderer = new MC.WebGLRenderer(g_glcanvas, g_glctx);
     }
-	
-	// choose renderer
-    /*if (g_glctx)
+    else
     {
-        main_use_webgl();
-    }
-    else*/
-    {
-        main_use_ajax3d();
+        // browser supports WebGL but initialization failed.
+        //window.location = "http://get.webgl.org/troubleshooting";
+        log("WARNING: can't initialize WebGL context");
     }
     
-	// init game
+    // choose renderer
+    if (g_glrenderer)
+    {
+        main_use_glrenderer();
+    }
+    else
+    {
+        main_use_c2renderer();
+    }
+    
+    // init game
     g_minus = new minus_game();
     g_minus.init();
     g_minus.frame( 0.0 );

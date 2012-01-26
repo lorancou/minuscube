@@ -4,7 +4,6 @@
 ---------------------------------------------------------------------------------
 
 - Use PHP minify (or equivalent) to build minus.js
-- WebGL renderer **WIP**
 - Cursor particles, color shows what can move
 - Cube moving animation
 - Ending
@@ -16,3 +15,9 @@
 - Error handling function, warning, error, assert (alert + log) etc.
 - Chrome warning fix: event.layerX and event.layerY are broken and deprecated in WebKit
 - Specular (both in WebGL and Ajax3d) + Phong (pbly WebGL only)
+- Fix sorting & lighting with Ajax3d
+- Renderer-independant picking
+- Renderer-independant lights
+- Renderer-independant materials/shaders/techniques
+- Renderer-independant camera
+- Renderer-independant mesh object

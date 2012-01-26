@@ -1,21 +1,18 @@
 /*
-   Ajax3d - a 3d engine using the WHATWG HTML <canvas> tag.
-   
-   Copyright (C) 2007 Eben Upton
-   
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of version 2 of the GNU General Public 
-   License as published by the Free Software Foundation.
-   
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-   
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-*/
+ * Canvas2DRenderer.js
+ * ----------
+ *
+ * Minus Cube
+ * Copyright (c) 2008-2012 Laurent Couvidou
+ * Contact : lorancou@free.fr
+ *
+ * Derived from:
+ * Ajax3d - a 3d engine using the WHATWG HTML <canvas> tag.
+ * Copyright (c) 2007-2012 Eben Upton
+ * http://ajax3d.sourceforge.net/
+ *
+ * This program is free software - see README for details.
+ */
 
 function ajax3d_sort(buckets, cells, bounds)
 {
@@ -286,7 +283,82 @@ function ajax3d_sort(buckets, cells, bounds)
     };
 }
 
+//------------------------------------------------------------------------------
+// The 2D canvas context renderer
+MC.Canvas2DRenderer = function(_canvas, _context)
+{
+    this.parent = MC.IRenderer;
+    this.parent.call(this, _canvas, _context);
+}
+MC.Canvas2DRenderer.prototype = new MC.IRenderer();
 
+//--------------------------------------------------------------------------
+MC.Canvas2DRenderer.prototype.clear = function(color)
+{
+    this.parent.prototype.clear.call(this);
+    
+    // TODO: color class? from some lib?
+    var csscolor = "rgba("
+                 + Math.round(color[0]*256)
+                 + ","
+                 + Math.round(color[1]*256)
+                 + ","
+                 + Math.round(color[2]*256)
+                 + ","
+                 + color[3]
+                 + ")";
+    this.context.fillStyle = csscolor;
+    g_minus.sort.clear(this.context); // spaghetti... sort needs to merge with this class anyway
+}
+    
+//--------------------------------------------------------------------------
+MC.Canvas2DRenderer.prototype.begin = function()
+{
+    this.parent.prototype.begin.call(this);
 
+    g_minus.sort.begin(); // spaghetti
+}
 
+//--------------------------------------------------------------------------
+MC.Canvas2DRenderer.prototype.drawElement = function(_matrix, _group)
+{
+    this.parent.prototype.drawElement.call(this, _matrix, _group);
 
+    var mesh_transformed = null;
+
+    g_minus.light.light_model( minus_mesh, _matrix ); // spaghetti
+
+    //var mat2 = mat4.create();
+    //mat4.multiply(matrix, cam_mat, mat2);
+    
+    var modelMatrix = mat4.create(_matrix);
+
+    var viewMatrix = mat4.identity();
+    mat4.translate(viewMatrix, [0.0, 0.0, -8.0]);
+
+    var projMatrix = mat4.create();
+    mat4.perspective(45, g_2dcanvas.width / g_2dcanvas.height, 0.1, 100.0, projMatrix);
+
+    var mvpMatrix = mat4.identity();
+    //mat4.multiply(mvpMatrix, scalingMatrix);
+    mat4.multiply(modelMatrix, mvpMatrix, mvpMatrix);
+    mat4.multiply(viewMatrix, mvpMatrix, mvpMatrix);
+    mat4.multiply(projMatrix, mvpMatrix, mvpMatrix);
+    //mat4.multiply(centeringMatrix, mvpMatrix, mvpMatrix);
+
+    mesh_transformed = ajax3d_model_multiply( 
+        minus_mesh,
+        mvpMatrix,
+        mesh_transformed // API!!!
+    );
+
+    g_minus.sort.add_model( mesh_transformed, _group ); // spaghetti
+}
+
+//--------------------------------------------------------------------------
+MC.Canvas2DRenderer.prototype.end = function()
+{
+    this.parent.prototype.end.call(this);
+
+    g_minus.sort.draw(this.context); // spaghetti
+}
