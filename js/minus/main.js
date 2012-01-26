@@ -44,7 +44,10 @@ function main_use_c2renderer()
     MC.renderer = g_c2renderer;
     
     g_c2renderer.turnOn();
-    g_glrenderer.turnOff();
+    if (g_glrenderer)
+    {
+        g_glrenderer.turnOff();
+    }
 
     if (g_minus) g_minus.update_needed = true;
     log("rendering with 2D canvas context");
