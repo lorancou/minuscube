@@ -1,4 +1,3 @@
-.syncignore
 backup.sh
 restore.sh
 upload.*.sh
