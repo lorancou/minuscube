@@ -3,7 +3,7 @@
   TODO list
 ---------------------------------------------------------------------------------
 
-- Use PHP minify (or equivalent) to build minus.js
+- Use UglifyJS to build minus.js
 - Cursor particles, color shows what can move
 - Cube moving animation
 - Ending

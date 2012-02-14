@@ -11,7 +11,7 @@
    * This program is free software - see README for details.
    */
 
-//echoFlat('<link rel="stylesheet" type="text/css" href="addon/minus.css"></link>');
-echoFlat('<script type="text/javascript" src="addon/minus.js"></script>');
+MINUS_DEPS
+MINUS_SCRIPTS
 
 ?>

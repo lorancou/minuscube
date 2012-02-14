@@ -14,7 +14,7 @@ var material_green = {ambient: [0.0, 0.5, 0.0], diffuse: [0.0, 1.0, 0.0], specul
 var material_blue = {ambient: [0.0, 0.0, 0.5], diffuse: [0.0, 0.0, 1.0], specular: [1.0, 1.0, 1.0], phong: 4.0};
 var material_white = {ambient: [0.5, 0.5, 0.5], diffuse: [1.0, 1.0, 1.0], specular: [1.0, 1.0, 1.0], phong: 4.0};
 
-/*var minus_mesh = {
+var minus_mesh = {
 	vertices: [[
 		[ 0.638294, -1.000000, 0.638294, 1.0 ],
 		[ -0.638294, -1.000000, 0.638294, 1.0 ],
@@ -104,9 +104,9 @@ var material_white = {ambient: [0.5, 0.5, 0.5], diffuse: [1.0, 1.0, 1.0], specul
 };
 
 ajax3d_model_make_normals( minus_mesh );
-ajax3d_model_make_centers( minus_mesh );*/
+ajax3d_model_make_centers( minus_mesh );
 
-var minus_mesh = {
+var cube_mesh = {
 	vertices: [[
         // Front face
         vec3.create([ -1.0, -1.0,  1.0]),
@@ -160,5 +160,5 @@ var minus_mesh = {
 	]
 };
 
-ajax3d_model_make_normals( minus_mesh );
-ajax3d_model_make_centers( minus_mesh );
+ajax3d_model_make_normals( cube_mesh );
+ajax3d_model_make_centers( cube_mesh );
