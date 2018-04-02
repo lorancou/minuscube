@@ -5,8 +5,6 @@ Minus Cube
 --------------------------------------------------------------------------------
 
 Copyright (c) 2006-2012 Laurent Couvidou  
-<http://lorancou.free.fr/index.php5?page=project&id-unix=minus>  
-Contact: <lorancou@free.fr>
 
 For the 2D canvas context rendering, code is derived from:  
 Ajax3d - a 3d engine using the WHATWG HTML <canvas> tag.  
